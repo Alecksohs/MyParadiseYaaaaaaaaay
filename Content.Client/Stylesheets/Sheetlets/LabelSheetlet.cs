@@ -17,11 +17,7 @@ public sealed class LabelSheetlet : Sheetlet<PalettedStylesheet>
         var robotoMonoBold14 = ResCache.GetFont("/Fonts/RobotoMono/RobotoMono-Bold.ttf", size: 14);
 
         var pixellari32 = ResCache.GetFont("/Fonts/Pixellari.ttf", size: 32);
-
-        var jetbrainsMonoBold11 = ResCache.GetFont("/Fonts/JetbrainsMono/JetbrainsMono-Bold.ttf", size: 11);
-        var jetbrainsMonoBold12 = ResCache.GetFont("/Fonts/JetbrainsMono/JetbrainsMono-Bold.ttf", size: 12);
-        var jetbrainsMonoBold13 = ResCache.GetFont("/Fonts/JetbrainsMono/JetbrainsMono-Bold.ttf", size: 14);
-        var jetbrainsMonoBold16 = ResCache.GetFont("/Fonts/JetbrainsMono/JetbrainsMono-Bold.ttf", size: 16);
+        16);
 
         return
         [
@@ -85,8 +81,6 @@ public sealed class LabelSheetlet : Sheetlet<PalettedStylesheet>
             E<Label>()
                 .Class(StyleClass.LabelMonospaceHeading)
                 .Prop(Label.StylePropertyFont, robotoMonoBold14),
-
-            E<Label>().Class("SectionHeader").Prop(Label.StylePropertyFont, jetbrainsMonoBold12),
 
             E<Label>().Class("InspectionUILabel").Prop(Label.StylePropertyFont, pixellari32),
         ];
