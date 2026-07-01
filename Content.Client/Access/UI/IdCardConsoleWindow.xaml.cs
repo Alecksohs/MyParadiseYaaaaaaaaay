@@ -30,6 +30,8 @@ namespace Content.Client.Access.UI
 
         // private AccessLevelControl _accessButtons = new();
         private readonly List<string> _jobPrototypeIds = new();
+        private Dictionary<DepartmentPrototype, List<JobPrototype>> departments;
+        private string[] _blacklistedDepartments = ["department-Incarcerated", "department-Silicon"];
 
         private string? _lastFullName;
         private string? _lastJobTitle;
@@ -37,8 +39,10 @@ namespace Content.Client.Access.UI
 
         // The job that will be picked if the ID doesn't have a job on the station.
         private static ProtoId<JobPrototype> _defaultJob = "Passenger";
+        public (DepartmentPrototype, BaseButton) CurrentDepartmentSelected { get; set; }
 
-        public IdCardConsoleWindow(IdCardConsoleBoundUserInterface owner, IPrototypeManager prototypeManager,
+        public IdCardConsoleWindow(IdCardConsoleBoundUserInterface owner,
+            IPrototypeManager prototypeManager,
             List<ProtoId<AccessLevelPrototype>> accessLevels)
         {
             RobustXamlLoader.Load(this);
@@ -69,13 +73,14 @@ namespace Content.Client.Access.UI
             // var jobs = _prototypeManager.EnumeratePrototypes<JobPrototype>().ToList();
             // jobs.Sort((x, y) => string.Compare(x.LocalizedName, y.LocalizedName, StringComparison.CurrentCulture));
 
-            var departments = new Dictionary<DepartmentPrototype, List<JobPrototype>>();
+
+            departments = new Dictionary<DepartmentPrototype, List<JobPrototype>>();
 
             foreach (var proto in _prototypeManager.EnumeratePrototypes<DepartmentPrototype>())
             {
                 var jobList = new List<JobPrototype>();
 
-                foreach (var job  in proto.Roles)
+                foreach (var job in proto.Roles)
                 {
                     _prototypeManager.Resolve(job, out JobPrototype? jobPrototype);
                     if (jobPrototype == null)
@@ -92,31 +97,26 @@ namespace Content.Client.Access.UI
 
             foreach (var JobPair in departments)
             {
-                // should we add this to a map?
-                var departmentContainer = new PanelContainer()
+                if(JobPair.Key.EditorHidden || _blacklistedDepartments.Contains(JobPair.Key.Name))
+                    continue;
+                var departmentButton = new Button()
                 {
-                    Name = JobPair.Key.Name,
-                    HorizontalExpand =  true,
-                    VerticalExpand = true,
+                    Name = $"{JobPair.Key.Name}_button",
+                    Text = Loc.GetString(JobPair.Key.Name),
+                    StyleClasses = { "latheCategoryButton" }
                 };
 
-                // foreach (var job in JobPair.Value)
-                // {
-                //     if (!prototypeManager.TryIndex(job, out var accessLevel))
-                //     {
-                //         continue;
-                //     }
-                //
-                //
-                //     var newButton = new Button
-                //     {
-                //         Text = job.Access,
-                //         ToggleMode = true,
-                //     };
-                //     AddChild(newButton);
-                //     ButtonsList.Add(accessLevel.ID, newButton);;
-                // }
+                departmentButton.OnPressed += button =>
+                {
+                    CurrentDepartmentSelected = (JobPair.Key, button.Button);
+                    RefreshUISelection(prototypeManager);
+                };
+                CurrentDepartmentSelected = (JobPair.Key, departmentButton);
+                DepartmentSelectionHolder.AddChild(departmentButton);
             }
+
+
+            RefreshUISelection(prototypeManager);
 
             SelectAllButton.OnPressed += _ =>
             {
@@ -131,14 +131,33 @@ namespace Content.Client.Access.UI
             };
 
             JobPresetOptionButton.OnItemSelected += SelectJobPreset;
-            // _accessButtons.Populate(accessLevels, prototypeManager);
-            // AccessLevelControlContainer.AddChild(_accessButtons);
-
-            // foreach (var (id, button) in _accessButtons.ButtonsList)
-            // {
-            //     button.OnPressed += _ => SubmitData();
-            // }
         }
+
+        private void RefreshUISelection(IPrototypeManager prototypeManager)
+        {
+            DepartmentMenuHolder.DisposeAllChildren();
+            var selectedDepartment = CurrentDepartmentSelected.Item1;
+            var selectedJobList = departments[selectedDepartment];
+
+
+            // should we add this to a map?
+            var departmentContainer = new DepartmentListing()
+            {
+                Name = selectedDepartment.Name,
+                HorizontalExpand = true,
+                VerticalExpand = true,
+            };
+
+            departmentContainer.Populate(selectedJobList, prototypeManager);
+
+            DepartmentMenuHolder.AddChild(departmentContainer);
+
+            foreach (var (id, button) in departmentContainer.ButtonsList)
+            {
+                button.OnPressed += _ => SubmitData();
+            }
+        }
+
 
         /// <param name="enabled">If true, every individual access button will be pressed. If false, each will be depressed.</param>
         private void SetAllAccess(bool enabled)
@@ -171,21 +190,6 @@ namespace Content.Client.Access.UI
             //     }
             // }
 
-            foreach (var group in job.AccessGroups)
-            {
-                if (!_prototypeManager.Resolve(group, out AccessGroupPrototype? groupPrototype))
-                {
-                    continue;
-                }
-
-                foreach (var access in groupPrototype.Tags)
-                {
-                    // if (_accessButtons.ButtonsList.TryGetValue(access, out var button) && !button.Disabled)
-                    // {
-                    //     button.Pressed = true;
-                    // }
-                }
-            }
 
             SubmitData();
         }

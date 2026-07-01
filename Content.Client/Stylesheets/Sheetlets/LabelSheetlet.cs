@@ -17,7 +17,6 @@ public sealed class LabelSheetlet : Sheetlet<PalettedStylesheet>
         var robotoMonoBold14 = ResCache.GetFont("/Fonts/RobotoMono/RobotoMono-Bold.ttf", size: 14);
 
         var pixellari32 = ResCache.GetFont("/Fonts/Pixellari.ttf", size: 32);
-        16);
 
         return
         [
