@@ -46,6 +46,3 @@
   id: Emoji
   path: /Fonts/NotoEmoji.ttf
 
-- type: font
-  id: FontAwesome
-  path: /Fonts/FontAwesomeFreeSolid.ttf
