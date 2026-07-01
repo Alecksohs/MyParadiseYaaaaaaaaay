@@ -28,7 +28,7 @@ namespace Content.Client.Access.UI
         private int _maxNameLength;
         private int _maxIdJobLength;
 
-        private AccessLevelControl _accessButtons = new();
+        // private AccessLevelControl _accessButtons = new();
         private readonly List<string> _jobPrototypeIds = new();
 
         private string? _lastFullName;
@@ -90,16 +90,33 @@ namespace Content.Client.Access.UI
 
             // Capital! We now have jobs - a bad npc in a game
 
-            // foreach (var JobPair in departments)
-            // {
-            //     // should we add this to a map?
-            //     var departmentContainer = new PanelContainer();
-            //
-            //     foreach (var job in JobPair.Value)
-            //     {
-            //         departmentContainer
-            //     }
-            // }
+            foreach (var JobPair in departments)
+            {
+                // should we add this to a map?
+                var departmentContainer = new PanelContainer()
+                {
+                    Name = JobPair.Key.Name,
+                    HorizontalExpand =  true,
+                    VerticalExpand = true,
+                };
+
+                // foreach (var job in JobPair.Value)
+                // {
+                //     if (!prototypeManager.TryIndex(job, out var accessLevel))
+                //     {
+                //         continue;
+                //     }
+                //
+                //
+                //     var newButton = new Button
+                //     {
+                //         Text = job.Access,
+                //         ToggleMode = true,
+                //     };
+                //     AddChild(newButton);
+                //     ButtonsList.Add(accessLevel.ID, newButton);;
+                // }
+            }
 
             SelectAllButton.OnPressed += _ =>
             {
@@ -114,23 +131,23 @@ namespace Content.Client.Access.UI
             };
 
             JobPresetOptionButton.OnItemSelected += SelectJobPreset;
-            _accessButtons.Populate(accessLevels, prototypeManager);
-            AccessLevelControlContainer.AddChild(_accessButtons);
+            // _accessButtons.Populate(accessLevels, prototypeManager);
+            // AccessLevelControlContainer.AddChild(_accessButtons);
 
-            foreach (var (id, button) in _accessButtons.ButtonsList)
-            {
-                button.OnPressed += _ => SubmitData();
-            }
+            // foreach (var (id, button) in _accessButtons.ButtonsList)
+            // {
+            //     button.OnPressed += _ => SubmitData();
+            // }
         }
 
         /// <param name="enabled">If true, every individual access button will be pressed. If false, each will be depressed.</param>
         private void SetAllAccess(bool enabled)
         {
-            foreach (var button in _accessButtons.ButtonsList.Values)
-            {
-                if (!button.Disabled && button.Pressed != enabled)
-                    button.Pressed = enabled;
-            }
+            // foreach (var button in _accessButtons.ButtonsList.Values)
+            // {
+            //     if (!button.Disabled && button.Pressed != enabled)
+            //         button.Pressed = enabled;
+            // }
         }
 
         private void SelectJobPreset(TguiOptionButton.ItemSelectedEventArgs args)
@@ -146,13 +163,13 @@ namespace Content.Client.Access.UI
             SetAllAccess(false);
 
             // this is a sussy way to do this
-            foreach (var access in job.Access)
-            {
-                if (_accessButtons.ButtonsList.TryGetValue(access, out var button) && !button.Disabled)
-                {
-                    button.Pressed = true;
-                }
-            }
+            // foreach (var access in job.Access)
+            // {
+            //     if (_accessButtons.ButtonsList.TryGetValue(access, out var button) && !button.Disabled)
+            //     {
+            //         button.Pressed = true;
+            //     }
+            // }
 
             foreach (var group in job.AccessGroups)
             {
@@ -163,10 +180,10 @@ namespace Content.Client.Access.UI
 
                 foreach (var access in groupPrototype.Tags)
                 {
-                    if (_accessButtons.ButtonsList.TryGetValue(access, out var button) && !button.Disabled)
-                    {
-                        button.Pressed = true;
-                    }
+                    // if (_accessButtons.ButtonsList.TryGetValue(access, out var button) && !button.Disabled)
+                    // {
+                    //     button.Pressed = true;
+                    // }
                 }
             }
 
@@ -213,10 +230,10 @@ namespace Content.Client.Access.UI
 
             JobPresetOptionButton.Disabled = !interfaceEnabled;
 
-            _accessButtons.UpdateState(state.TargetIdAccessList?.ToList() ??
-                                       new List<ProtoId<AccessLevelPrototype>>(),
-                                       state.AllowedModifyAccessList?.ToList() ??
-                                       new List<ProtoId<AccessLevelPrototype>>());
+            // _accessButtons.UpdateState(state.TargetIdAccessList?.ToList() ??
+            //                            new List<ProtoId<AccessLevelPrototype>>(),
+            //                            state.AllowedModifyAccessList?.ToList() ??
+            //                            new List<ProtoId<AccessLevelPrototype>>());
 
             var jobIndex = _jobPrototypeIds.IndexOf(state.TargetIdJobPrototype);
             // If the job index is < 0 that means they don't have a job registered in the station records
@@ -240,12 +257,12 @@ namespace Content.Client.Access.UI
             var jobProtoDirty = _lastJobProto != null &&
                                 _jobPrototypeIds[JobPresetOptionButton.SelectedId] != _lastJobProto;
 
-            _owner.SubmitData(
-                FullNameLineEdit.Text,
-                JobTitleLineEdit.Text,
-                // Iterate over the buttons dictionary, filter by `Pressed`, only get key from the key/value pair
-                _accessButtons.ButtonsList.Where(x => x.Value.Pressed).Select(x => x.Key).ToList(),
-                jobProtoDirty ? _jobPrototypeIds[JobPresetOptionButton.SelectedId] : string.Empty);
+            // _owner.SubmitData(
+            //     FullNameLineEdit.Text,
+            //     JobTitleLineEdit.Text,
+            //     // Iterate over the buttons dictionary, filter by `Pressed`, only get key from the key/value pair
+            //     _accessButtons.ButtonsList.Where(x => x.Value.Pressed).Select(x => x.Key).ToList(),
+            //     jobProtoDirty ? _jobPrototypeIds[JobPresetOptionButton.SelectedId] : string.Empty);
         }
     }
 }
