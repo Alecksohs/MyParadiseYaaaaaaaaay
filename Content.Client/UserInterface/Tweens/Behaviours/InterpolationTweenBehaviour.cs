@@ -23,7 +23,7 @@ public sealed class InterpolationTweenBehaviour : TweenBehaviour
             ITweener tweener = _playingTweeners[i];
             tweener.Tick(deltaTime);
 
-            if(!tweener.IsPlaying)
+            if (!tweener.IsPlaying)
             {
                 _playingTweeners.RemoveAt(i);
             }
@@ -41,6 +41,7 @@ public sealed class InterpolationTweenBehaviour : TweenBehaviour
         {
             tweener.Kill();
         }
+
         _playingTweeners.Clear();
 
         MarkFinished();
@@ -54,6 +55,7 @@ public sealed class InterpolationTweenBehaviour : TweenBehaviour
             {
                 continue;
             }
+
             tweener.Complete();
         }
 
@@ -72,7 +74,7 @@ public sealed class InterpolationTweenBehaviour : TweenBehaviour
 
     public override float GetDuration()
     {
-        if(_durationCalculated)
+        if (_durationCalculated)
         {
             return _cachedDurationCalculated;
         }
@@ -105,23 +107,17 @@ public sealed class InterpolationTweenBehaviour : TweenBehaviour
     {
         if (tweener == null)
         {
-            throw new ArgumentNullException(
-                $"Tried to {nameof(Add)} a null {nameof(ITweener)} on {nameof(InterpolationTweenBehaviour)}"
-            );
+            return;
         }
 
         if (tweener.IsPlaying)
         {
-            throw new ArgumentNullException(
-                $"Tried to {nameof(Add)} a {nameof(ITweener)} on {nameof(InterpolationTweenBehaviour)} but it was already playing"
-            );
+            return;
         }
 
         if (_tweeners.Contains(tweener))
         {
-            throw new ArgumentNullException(
-                $"Tried to {nameof(Add)} a {nameof(ITweener)} on {nameof(InterpolationTweenBehaviour)} but it was already added"
-            );
+            return;
         }
 
         _tweeners.Add(tweener);
