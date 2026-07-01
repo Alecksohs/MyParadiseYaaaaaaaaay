@@ -1,3 +1,4 @@
+using Content.Client.UserInterface.Controls;
 using Content.Shared.Atmos.Piping.Portable.Components;
 using JetBrains.Annotations;
 using Robust.Client.UserInterface;
@@ -43,7 +44,7 @@ public sealed class SpaceHeaterBoundUserInterface : BoundUserInterface
         SendMessage(new SpaceHeaterChangeTemperatureMessage(changeAmount));
     }
 
-    private void OnModeChanged(OptionButton.ItemSelectedEventArgs args)
+    private void OnModeChanged(TguiOptionButton.ItemSelectedEventArgs args)
     {
         _window?.ModeSelector.SelectId(args.Id);
         SendMessage(new SpaceHeaterChangeModeMessage((SpaceHeaterMode)args.Id));

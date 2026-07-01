@@ -148,7 +148,7 @@ public sealed partial class NoteEdit : FancyWindow
     private bool CanCreate { get; set; }
     private bool CanEdit { get; set; }
 
-    private void OnTypeChanged(OptionButton.ItemSelectedEventArgs args)
+    private void OnTypeChanged(TguiOptionButton.ItemSelectedEventArgs args)
     {
         // We should be resetting the underlying values too but the server handles that anyway
         switch (args.Id)
@@ -208,13 +208,13 @@ public sealed partial class NoteEdit : FancyWindow
         IsSecret = SecretCheckBox.Pressed;
     }
 
-    private void OnSeverityChanged(OptionButton.ItemSelectedEventArgs args)
+    private void OnSeverityChanged(TguiOptionButton.ItemSelectedEventArgs args)
     {
         NoteSeverity = args.Id == -1 ? NoteSeverity = null : (NoteSeverity) args.Id;
         SeverityOption.SelectId(args.Id);
     }
 
-    private void OnLengthChanged(OptionButton.ItemSelectedEventArgs args)
+    private void OnLengthChanged(TguiOptionButton.ItemSelectedEventArgs args)
     {
         ExpiryLengthDropdown.SelectId(args.Id);
     }

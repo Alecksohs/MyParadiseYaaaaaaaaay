@@ -1,19 +1,10 @@
-﻿using Content.Client.Resources;
-using JetBrains.Annotations;
+using Content.Client.Resources;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
 
 namespace Content.Client.Stylesheets.Fonts;
 
-/// <summary>
-///     This class should have a base type. The whole font system is currently kind of bad and completely temporary.
-///     This class is just here because it does sort of work.
-///     TODO: fix (once engine support is added for font properties?)
-/// </summary>
-/// <param name="resCache"></param>
-/// <param name="variant"></param>
-[PublicAPI]
-public sealed class NotoFontFamilyStack(IResourceCache resCache, string variant = "")
+public class FontFamilyStack(IResourceCache resCache, string variant = "")
 {
     /// <summary>
     ///     The primary font path, with string substitution markers.
@@ -23,8 +14,7 @@ public sealed class NotoFontFamilyStack(IResourceCache resCache, string variant 
     ///     0 is the font kind.
     ///     1 is the font kind with BoldItalic replaced with Bold when it occurs.
     /// </remarks>
-    private string _fontPrimary = $"/Fonts/NotoSans{variant}/NotoSans{variant}-{{0}}.ttf";
-
+    public virtual string _fontPrimary => $"/Fonts/NotoSans{variant}/NotoSans{variant}-{{0}}.ttf";
     /// <summary>
     ///     The symbols font path, with string substitution markers.
     /// </summary>
@@ -33,12 +23,13 @@ public sealed class NotoFontFamilyStack(IResourceCache resCache, string variant 
     ///     0 is the font kind.
     ///     1 is the font kind with BoldItalic replaced with Bold when it occurs.
     /// </remarks>
-    private string _fontSymbols = "/Fonts/NotoSans/NotoSansSymbols-{2}.ttf";
+    public virtual string? _fontSymbols => "/Fonts/NotoSans/NotoSansSymbols-{2}.ttf";
 
     /// <summary>
     ///     The fallback font path, exactly. (no string substitutions.)
     /// </summary>
     private string[] _extras = new[] { "/Fonts/NotoSans/NotoSansSymbols2-Regular.ttf" };
+
 
     public HashSet<FontKind> AvailableKinds = [FontKind.Regular, FontKind.Bold, FontKind.Italic, FontKind.BoldItalic];
 
@@ -67,9 +58,12 @@ public sealed class NotoFontFamilyStack(IResourceCache resCache, string variant 
         var kindStr = kind.AsFileName();
         var fontList = new List<string>()
         {
-            string.Format(_fontPrimary, kindStr, simpleKindStr, boldOrRegularStr),
-            string.Format(_fontSymbols, kindStr, simpleKindStr, boldOrRegularStr),
+            string.Format(_fontPrimary, kindStr, simpleKindStr, boldOrRegularStr)
         };
+
+        if(_fontSymbols != null)
+            fontList.Add(string.Format(_fontSymbols, kindStr, simpleKindStr, boldOrRegularStr));
+
         fontList.AddRange(_extras);
         return fontList.ToArray();
     }

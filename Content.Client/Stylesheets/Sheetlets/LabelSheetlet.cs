@@ -16,15 +16,22 @@ public sealed class LabelSheetlet : Sheetlet<PalettedStylesheet>
         var robotoMonoBold12 = ResCache.GetFont("/Fonts/RobotoMono/RobotoMono-Bold.ttf", size: 12);
         var robotoMonoBold14 = ResCache.GetFont("/Fonts/RobotoMono/RobotoMono-Bold.ttf", size: 14);
 
+        var pixellari32 = ResCache.GetFont("/Fonts/Pixellari.ttf", size: 32);
+
+        var jetbrainsMonoBold11 = ResCache.GetFont("/Fonts/JetbrainsMono/JetbrainsMono-Bold.ttf", size: 11);
+        var jetbrainsMonoBold12 = ResCache.GetFont("/Fonts/JetbrainsMono/JetbrainsMono-Bold.ttf", size: 12);
+        var jetbrainsMonoBold13 = ResCache.GetFont("/Fonts/JetbrainsMono/JetbrainsMono-Bold.ttf", size: 14);
+        var jetbrainsMonoBold16 = ResCache.GetFont("/Fonts/JetbrainsMono/JetbrainsMono-Bold.ttf", size: 16);
+
         return
         [
             E<Label>()
                 .Class(StyleClass.LabelHeading)
-                .Font(sheet.BaseFont.GetFont(16, FontKind.Bold))
+                .Font(sheet.BaseFont.GetFont(12, FontKind.Bold))
                 .FontColor(sheet.HighlightPalette.Text),
             E<Label>()
                 .Class(StyleClass.LabelHeadingBigger)
-                .Font(sheet.BaseFont.GetFont(20, FontKind.Bold))
+                .Font(sheet.BaseFont.GetFont(13, FontKind.Bold))
                 .FontColor(sheet.HighlightPalette.Text),
             E<Label>()
                 .Class(StyleClass.LabelSubText)
@@ -32,7 +39,7 @@ public sealed class LabelSheetlet : Sheetlet<PalettedStylesheet>
                 .FontColor(Color.DarkGray),
             E<Label>()
                 .Class(StyleClass.LabelKeyText)
-                .Font(sheet.BaseFont.GetFont(12, FontKind.Bold))
+                .Font(sheet.BaseFont.GetFont(11, FontKind.Bold))
                 .FontColor(sheet.HighlightPalette.Text),
             E<Label>()
                 .Class(StyleClass.LabelWeak)
@@ -47,6 +54,10 @@ public sealed class LabelSheetlet : Sheetlet<PalettedStylesheet>
             E<Label>()
                 .Class(StyleClass.Highlight)
                 .FontColor(sheet.HighlightPalette.Text),
+
+            E<Button>().ParentOf(E<Label>()).Margin(new Thickness(8f, 2f)),
+            E<OptionButton>().ParentOf(E<BoxContainer>()).ParentOf(E<Label>()).Margin(new Thickness(16f, 2f)),
+
 
             E<Label>()
                 .Class(StyleClass.StatusGood)
@@ -74,6 +85,10 @@ public sealed class LabelSheetlet : Sheetlet<PalettedStylesheet>
             E<Label>()
                 .Class(StyleClass.LabelMonospaceHeading)
                 .Prop(Label.StylePropertyFont, robotoMonoBold14),
+
+            E<Label>().Class("SectionHeader").Prop(Label.StylePropertyFont, jetbrainsMonoBold12),
+
+            E<Label>().Class("InspectionUILabel").Prop(Label.StylePropertyFont, pixellari32),
         ];
     }
 }

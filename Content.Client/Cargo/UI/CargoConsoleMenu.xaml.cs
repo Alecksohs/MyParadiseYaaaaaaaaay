@@ -98,7 +98,7 @@ namespace Content.Client.Cargo.UI
             };
         }
 
-        private void OnCategoryItemSelected(OptionButton.ItemSelectedEventArgs args)
+        private void OnCategoryItemSelected(TguiOptionButton.ItemSelectedEventArgs args)
         {
             SetCategoryText(args.Id);
             PopulateProducts();
@@ -294,7 +294,6 @@ namespace Content.Client.Cargo.UI
                                            TransferSpinBox.Value > bankAccount.Accounts[orderConsole.Account] * orderConsole.TransferLimit ||
                                            _timing.CurTime < orderConsole.NextAccountActionTime;
 
-            OrdersSpacer.Visible = orderConsole.Mode != CargoOrderConsoleMode.PrintSlip;
             Orders.Visible = orderConsole.Mode != CargoOrderConsoleMode.PrintSlip;
         }
     }

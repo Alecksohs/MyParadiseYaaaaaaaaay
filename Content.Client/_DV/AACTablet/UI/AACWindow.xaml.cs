@@ -50,7 +50,7 @@ public sealed partial class AACWindow : FancyWindow
         FilterSearch(null);
     }
 
-    private void OnChannelSelected(OptionButton.ItemSelectedEventArgs args)
+    private void OnChannelSelected(TguiOptionButton.ItemSelectedEventArgs args)
     {
         RadioChannels.SelectId(args.Id);
     }

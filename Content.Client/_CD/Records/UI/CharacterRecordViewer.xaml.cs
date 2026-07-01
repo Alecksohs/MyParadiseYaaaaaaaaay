@@ -92,18 +92,7 @@ public sealed partial class CharacterRecordViewer : FancyWindow
             _selectedListingKey = null;
         };
 
-        RecordFilters.OnPressed += _ =>
-        {
-            OnFiltersChanged?.Invoke(_filterType, RecordFiltersValue.Text);
-        };
-
-        RecordFiltersReset.OnPressed += _ =>
-        {
-            OnFiltersChanged?.Invoke(StationRecordFilterType.Name, null);
-            RecordFiltersValue.Clear();
-        };
-
-        RecordFiltersValue.OnTextEntered += text =>
+        RecordFiltersValue.OnTextTyped += text =>
         {
             OnFiltersChanged?.Invoke(_filterType, text.Text);
         };

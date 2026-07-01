@@ -12,7 +12,7 @@ public sealed partial class LobbyCharacterPreviewPanel : Control
 {
     [Dependency] private readonly IEntityManager _entManager = default!;
 
-    public Button CharacterSetupButton => CharacterSetup;
+    public TextureButton CharacterSetupButton => CharacterSetup;
 
     private EntityUid? _previewDummy;
 
@@ -28,9 +28,10 @@ public sealed partial class LobbyCharacterPreviewPanel : Control
         Unloaded.Visible = !value;
     }
 
-    public void SetSummaryText(string value)
+    public void SetSummaryText(string name, string age)
     {
-        Summary.Text = value;
+        CharName.Text = name;
+        CharAge.Text = age;
     }
 
     public void SetSprite(EntityUid uid)

@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Client.UserInterface.Controls;
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Markings;
 using Content.Shared.Humanoid.Prototypes;
@@ -380,7 +381,7 @@ public sealed partial class MarkingPicker : Control
         }
     }
 
-    private void OnCategoryChange(OptionButton.ItemSelectedEventArgs category)
+    private void OnCategoryChange(TguiOptionButton.ItemSelectedEventArgs category)
     {
         CMarkingCategoryButton.SelectId(category.Id);
         _selectedMarkingCategory = _markingCategories[category.Id];

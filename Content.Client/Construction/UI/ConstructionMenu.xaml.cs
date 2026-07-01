@@ -19,7 +19,7 @@ namespace Content.Client.Construction.UI
         // It isn't optimal to expose UI controls like this, but the UI control design is
         // questionable so it can't be helped.
         string[] Categories { get; set; }
-        OptionButton OptionCategories { get; }
+        TguiOptionButton OptionCategories { get; }
 
         bool EraseButtonPressed { get; set; }
         bool GridViewButtonPressed { get; set; }
@@ -58,7 +58,7 @@ namespace Content.Client.Construction.UI
     }
 
     [GenerateTypedNameReferences]
-    public sealed partial class ConstructionMenu : DefaultWindow, IConstructionMenuView
+    public sealed partial class ConstructionMenu : FancyWindow, IConstructionMenuView
     {
         public bool BuildButtonPressed
         {

@@ -1,6 +1,9 @@
 # Records editor
 humanoid-profile-editor-cd-records-tab = Records
 
+humanoid-profile-editor-header-medical = Medical
+humanoid-profile-editor-header-security = Security
+
 # General
 humanoid-profile-editor-cd-records-height = Height (cm):
 humanoid-profile-editor-cd-records-weight = Weight (kg):

@@ -1,4 +1,5 @@
-﻿using Content.Client.Examine;
+﻿using System.Numerics;
+using Content.Client.Examine;
 using Content.Client.Stylesheets.Fonts;
 using Content.Client.Stylesheets.SheetletConfigs;
 using Content.Client.Stylesheets.Stylesheets;
@@ -17,9 +18,13 @@ public sealed class TooltipSheetlet<T> : Sheetlet<T> where T: PalettedStylesheet
     {
         ITooltipConfig tooltipCfg = sheet;
 
-        var tooltipBox = sheet.GetTextureOr(tooltipCfg.TooltipBoxPath, NanotrasenStylesheet.TextureRoot)
-            .IntoPatch(StyleBox.Margin.All, 2);
-        tooltipBox.SetContentMarginOverride(StyleBox.Margin.Horizontal, 7);
+        var tooltipBox = new StyleBoxSDFBox
+        {
+            BackgroundColor = sheet.PanelPalette.Background,
+            BorderThickness = 0.25f,
+            BorderColor = sheet.PanelPalette.PanelBorderColor.WithAlpha(sheet.PanelPalette.PanelBorderColor.A * 0.25f),
+            CornerRadius = new Vector4(2f),
+        };
 
         var whisperBox = sheet.GetTextureOr(tooltipCfg.WhisperBoxPath, NanotrasenStylesheet.TextureRoot)
             .IntoPatch(StyleBox.Margin.All, 2);

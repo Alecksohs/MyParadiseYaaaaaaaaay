@@ -10,6 +10,7 @@ using Robust.Client.GameObjects;
 using Robust.Client.Player;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
+using Robust.Client.UserInterface.Tweens;
 using Robust.Client.UserInterface.XAML;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
@@ -28,6 +29,7 @@ public sealed partial class ResearchConsoleMenu : FancyWindow
     private readonly ResearchSystem _research;
     private readonly SpriteSystem _sprite;
     private readonly AccessReaderSystem _accessReader;
+    private readonly TweenManager _tween;
 
     public EntityUid Entity;
 
@@ -39,6 +41,7 @@ public sealed partial class ResearchConsoleMenu : FancyWindow
         _research = _entity.System<ResearchSystem>();
         _sprite = _entity.System<SpriteSystem>();
         _accessReader = _entity.System<AccessReaderSystem>();
+        _tween = _entity.System<TweenManager>();
 
         ServerButton.OnPressed += _ => OnServerButtonPressed?.Invoke();
     }
@@ -70,7 +73,7 @@ public sealed partial class ResearchConsoleMenu : FancyWindow
         foreach (var techId in database.CurrentTechnologyCards)
         {
             var tech = _prototype.Index<TechnologyPrototype>(techId);
-            var cardControl = new TechnologyCardControl(tech, _prototype, _sprite, _research.GetTechnologyDescription(tech, includeTier: false), state.Points, hasAccess);
+            var cardControl = new TechnologyCardControl(tech, _prototype, _sprite, _research.GetTechnologyDescription(tech, includeTier: false), state.Points, hasAccess, _tween);
             cardControl.OnPressed += () => OnTechnologyCardPressed?.Invoke(techId);
             TechnologyCardsContainer.AddChild(cardControl);
         }

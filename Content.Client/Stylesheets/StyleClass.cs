@@ -35,6 +35,8 @@ public static class StyleClass
     public const string HighDivider = "HighDivider";
     public const string LowDivider = "LowDivider";
 
+    public const string LowDividerLowAlpha = "LowDividerLowAlpha";
+
     public const string LabelHeading = "LabelHeading";
     public const string LabelHeadingBigger = "LabelHeadingBigger";
     public const string LabelSubText = "LabelSubText";
@@ -67,4 +69,20 @@ public static class StyleClass
     public const string TooltipPanel = "TooltipPanel";
     public const string TooltipTitle = "TooltipTitle";
     public const string TooltipDesc = "TooltipDesc";
+
+    //oasis
+    public const string SurfacePrimary = "SurfacePrimary";
+    public const string SurfaceSecondary = "SurfaceSecondary";
+    public const string SurfaceTertiary = "SurfaceTertiary";
+    public const string SurfaceBackground = "SurfaceBackground";
+
+    public const string AccentPrimary = "AccentPrimary";
+    public const string AccentSecondary = "AccentSecondary";
+    public const string AccentTertiary = "AccentTertiary";
+
+    public const string SeperatorAccented = "SeperatorAccented";
+    public const string ListView = "ListView";
+
+
+    public const string ChatboxDarkenedBackground = "ChatboxDarkenedBackground";
 }

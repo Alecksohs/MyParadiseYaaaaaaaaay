@@ -115,3 +115,13 @@
   id: Hologram
   kind: source
   path: "/Textures/Shaders/hologram.swsl"
+
+- type: shader
+  id: UIShaderSDF
+  kind: source
+  path: "/Textures/Shaders/uiSDF.swsl"
+
+- type: shader
+  id: UIShaderIconBox
+  kind: source
+  path: "/Textures/Shaders/uiIconBox.swsl"

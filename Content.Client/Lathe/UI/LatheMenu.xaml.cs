@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Text;
 using Content.Client.Materials;
+using Content.Client.UserInterface.Controls;
 using Content.Shared._DV.Salvage.Components; // DeltaV
 using Content.Shared._DV.Salvage.Systems; // DeltaV
 using Content.Shared.Lathe;
@@ -20,7 +21,7 @@ using Robust.Shared.Utility;
 namespace Content.Client.Lathe.UI;
 
 [GenerateTypedNameReferences]
-public sealed partial class LatheMenu : DefaultWindow
+public sealed partial class LatheMenu : FancyWindow
 {
     [Dependency] private readonly IEntityManager _entityManager = default!;
     [Dependency] private readonly IPlayerManager _player = default!; // DeltaV
@@ -42,6 +43,8 @@ public sealed partial class LatheMenu : DefaultWindow
     public List<ProtoId<LatheRecipePrototype>> Recipes = new();
 
     public List<ProtoId<LatheCategoryPrototype>>? Categories;
+
+    private static readonly ProtoId<LatheCategoryPrototype> AllCategory = "AllCategory";
 
     public ProtoId<LatheCategoryPrototype>? CurrentCategory;
 
@@ -75,8 +78,6 @@ public sealed partial class LatheMenu : DefaultWindow
 
             PopulateRecipes();
         };
-
-        FilterOption.OnItemSelected += OnItemSelected;
 
         ServerListButton.OnPressed += a => OnServerListButtonPressed?.Invoke(a);
         DeleteFabricating.OnPressed += _ => DeleteFabricatingAction?.Invoke();
@@ -144,7 +145,7 @@ public sealed partial class LatheMenu : DefaultWindow
                 continue;
 
             // Category filtering
-            if (CurrentCategory != null)
+            if (CurrentCategory != null && CurrentCategory != AllCategory)
             {
                 if (proto.Categories.Count <= 0)
                     continue;
@@ -295,14 +296,38 @@ public sealed partial class LatheMenu : DefaultWindow
             .OrderBy(p => Loc.GetString(p.Name))
             .ToList();
 
-        FilterOption.Clear();
-        FilterOption.AddItem(Loc.GetString("lathe-menu-category-all"), -1);
+        // FilterOption.Clear();
+        // FilterOption.AddItem(Loc.GetString("lathe-menu-category-all"), -1);
+        // foreach (var category in sortedCategories)
+        // {
+        //     FilterOption.AddItem(Loc.GetString(category.Name), Categories.IndexOf(category.ID));
+        // }
+        //
+        // FilterOption.SelectId(-1);
+
+        CategoryList.DisposeAllChildren();
+
+        var allCategory = _prototypeManager.Index<LatheCategoryPrototype>("AllCategory");
+        var all = new CategoryControl(allCategory);
+        all.OnButtonPressed += category =>
+        {
+            CurrentCategory = category;
+            PopulateRecipes();
+        };
+        CategoryList.AddChild(all);
+
         foreach (var category in sortedCategories)
         {
-            FilterOption.AddItem(Loc.GetString(category.Name), Categories.IndexOf(category.ID));
+            var categoryControl = new CategoryControl(category);
+            categoryControl.OnButtonPressed += categoryId =>
+            {
+                CurrentCategory = categoryId;
+                PopulateRecipes();
+            };
+
+            CategoryList.AddChild(categoryControl);
         }
 
-        FilterOption.SelectId(-1);
     }
 
     /// <summary>
@@ -389,19 +414,5 @@ public sealed partial class LatheMenu : DefaultWindow
         }
 
         return new Control();
-    }
-
-    private void OnItemSelected(OptionButton.ItemSelectedEventArgs obj)
-    {
-        FilterOption.SelectId(obj.Id);
-        if (obj.Id == -1)
-        {
-            CurrentCategory = null;
-        }
-        else
-        {
-            CurrentCategory = Categories?[obj.Id];
-        }
-        PopulateRecipes();
     }
 }

@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Client.UserInterface.Controls;
 using Content.Shared.Access;
 using Content.Shared.Access.Systems;
 using Content.Shared.CCVar;
@@ -14,7 +15,7 @@ using static Content.Shared.Access.Components.IdCardConsoleComponent;
 namespace Content.Client.Access.UI
 {
     [GenerateTypedNameReferences]
-    public sealed partial class IdCardConsoleWindow : DefaultWindow
+    public sealed partial class IdCardConsoleWindow : FancyWindow
     {
         [Dependency] private readonly IConfigurationManager _cfgManager = default!;
         [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
@@ -65,19 +66,40 @@ namespace Content.Client.Access.UI
             };
             JobTitleSaveButton.OnPressed += _ => SubmitData();
 
-            var jobs = _prototypeManager.EnumeratePrototypes<JobPrototype>().ToList();
-            jobs.Sort((x, y) => string.Compare(x.LocalizedName, y.LocalizedName, StringComparison.CurrentCulture));
+            // var jobs = _prototypeManager.EnumeratePrototypes<JobPrototype>().ToList();
+            // jobs.Sort((x, y) => string.Compare(x.LocalizedName, y.LocalizedName, StringComparison.CurrentCulture));
 
-            foreach (var job in jobs)
+            var departments = new Dictionary<DepartmentPrototype, List<JobPrototype>>();
+
+            foreach (var proto in _prototypeManager.EnumeratePrototypes<DepartmentPrototype>())
             {
-                if (!job.OverrideConsoleVisibility.GetValueOrDefault(job.SetPreference))
+                var jobList = new List<JobPrototype>();
+
+                foreach (var job  in proto.Roles)
                 {
-                    continue;
+                    _prototypeManager.Resolve(job, out JobPrototype? jobPrototype);
+                    if (jobPrototype == null)
+                        continue;
+                    jobList.Add(jobPrototype);
+                    _jobPrototypeIds.Add(jobPrototype.ID);
+                    JobPresetOptionButton.AddItem(Loc.GetString(jobPrototype.Name), _jobPrototypeIds.Count - 1);
                 }
 
-                _jobPrototypeIds.Add(job.ID);
-                JobPresetOptionButton.AddItem(Loc.GetString(job.Name), _jobPrototypeIds.Count - 1);
+                departments.Add(proto, jobList);
             }
+
+            // Capital! We now have jobs - a bad npc in a game
+
+            // foreach (var JobPair in departments)
+            // {
+            //     // should we add this to a map?
+            //     var departmentContainer = new PanelContainer();
+            //
+            //     foreach (var job in JobPair.Value)
+            //     {
+            //         departmentContainer
+            //     }
+            // }
 
             SelectAllButton.OnPressed += _ =>
             {
@@ -111,7 +133,7 @@ namespace Content.Client.Access.UI
             }
         }
 
-        private void SelectJobPreset(OptionButton.ItemSelectedEventArgs args)
+        private void SelectJobPreset(TguiOptionButton.ItemSelectedEventArgs args)
         {
             if (!_prototypeManager.TryIndex(_jobPrototypeIds[args.Id], out JobPrototype? job))
             {

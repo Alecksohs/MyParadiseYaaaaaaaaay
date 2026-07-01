@@ -9,4 +9,5 @@ public partial class SystemStylesheet
     public override ColorPalette PositivePalette => Palettes.Green;
     public override ColorPalette NegativePalette => Palettes.Red;
     public override ColorPalette HighlightPalette => Palettes.Maroon;
+    public override ModalPalette PanelPalette => ModalPalette.FromHexBases("#00FF00", "#00FF00", "#00FF00", "#00FF00");
 }

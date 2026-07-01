@@ -162,11 +162,7 @@ public abstract class SharedResearchSystem : EntitySystem
             description.PushNewline();
         }
 
-        if (includeCost)
-        {
-            description.AddMarkupOrThrow(Loc.GetString("research-console-cost", ("amount", technology.Cost)));
-            description.PushNewline();
-        }
+
 
         if (includePrereqs && technology.TechnologyPrerequisites.Any())
         {

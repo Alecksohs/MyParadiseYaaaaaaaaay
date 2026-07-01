@@ -8,11 +8,11 @@
             <Label Name="ExpiryLabel" Text="{Loc admin-note-editor-expiry-label}" Visible="False" />
             <HistoryLineEdit Name="ExpiryLineEdit" PlaceHolder="{Loc admin-note-editor-expiry-placeholder}"
                              Visible="False" HorizontalExpand="True" />
-            <OptionButton Name="ExpiryLengthDropdown" Visible="False" />
+            <controls:TguiOptionButton Name="ExpiryLengthDropdown" Visible="False" />
         </BoxContainer>
         <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
-            <OptionButton Name="TypeOption" HorizontalAlignment="Center" />
-            <OptionButton Name="SeverityOption" HorizontalAlignment="Center" />
+            <controls:TguiOptionButton Name="TypeOption" HorizontalAlignment="Center" />
+            <controls:TguiOptionButton Name="SeverityOption" HorizontalAlignment="Center" />
             <CheckBox Name="SecretCheckBox" Text="{Loc admin-note-editor-secret}"
                       ToolTip="{Loc admin-note-editor-secret-tooltip}" />
             <CheckBox Name="PermanentCheckBox" Pressed="True" Text="{Loc admin-note-editor-expiry-checkbox}"

@@ -4,6 +4,7 @@
          xmlns:cc="clr-namespace:Content.Client.Administration.UI.CustomControls"
          xmlns:ui="clr-namespace:Content.Client.Lobby.UI"
          xmlns:traits="clr-namespace:Content.Client._DV.Traits.UI"
+         xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
          HorizontalExpand="True">
         <!-- Left side -->
         <BoxContainer Orientation="Vertical" Margin="10 10 10 10" HorizontalExpand="True">
@@ -60,7 +61,7 @@
                                     <TextureButton Name="SpeciesInfoButton" Scale="0.3 0.3"
                                                    VerticalAlignment="Center"
                                                    ToolTip="{Loc 'humanoid-profile-editor-guidebook-button-tooltip'}"/>
-                                    <OptionButton Name="SpeciesButton" HorizontalAlignment="Right" />
+                                    <controls:TguiOptionButton Name="SpeciesButton" HorizontalAlignment="Right" />
                                 </BoxContainer>
                                 <!-- Age -->
                                 <BoxContainer HorizontalExpand="True">
@@ -81,13 +82,13 @@
                                 <BoxContainer HorizontalExpand="True">
                                     <Label Text="{Loc 'humanoid-profile-editor-sex-label'}" />
                                     <Control HorizontalExpand="True"/>
-                                    <OptionButton Name="SexButton" HorizontalAlignment="Right" />
+                                    <controls:TguiOptionButton Name="SexButton" HorizontalAlignment="Right" />
                                 </BoxContainer>
                                 <!-- Pronouns -->
                                 <BoxContainer HorizontalExpand="True">
                                     <Label Text="{Loc 'humanoid-profile-editor-pronouns-label'}" />
                                     <Control HorizontalExpand="True"/>
-                                    <OptionButton Name="PronounsButton" HorizontalAlignment="Right" />
+                                    <controls:TguiOptionButton Name="PronounsButton" HorizontalAlignment="Right" />
                                 </BoxContainer>
                                 <!-- Show clothing -->
                                 <BoxContainer HorizontalExpand="True">
@@ -99,7 +100,7 @@
                                 <BoxContainer HorizontalExpand="True">
                                     <Label Text="{Loc 'humanoid-profile-editor-spawn-priority-label'}" />
                                     <Control HorizontalExpand="True"/>
-                                    <OptionButton Name="SpawnPriorityButton" HorizontalAlignment="Right" />
+                                    <controls:TguiOptionButton Name="SpawnPriorityButton" HorizontalAlignment="Right" />
                                 </BoxContainer>
                             </BoxContainer>
                             <!-- Skin -->
@@ -123,7 +124,7 @@
                 </BoxContainer>
                 <BoxContainer Orientation="Vertical">
                     <!-- Jobs -->
-                    <OptionButton Name="PreferenceUnavailableButton" />
+                    <controls:TguiOptionButton Name="PreferenceUnavailableButton" />
                     <ScrollContainer VerticalExpand="True">
                         <BoxContainer Name="JobList" Orientation="Vertical" />
                     </ScrollContainer>

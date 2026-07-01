@@ -834,27 +834,7 @@ namespace Content.Client.Stylesheets
                 Element<ContainerButton>().Class(StyleClassStorageButton)
                     .Pseudo(ContainerButton.StylePseudoClassDisabled)
                     .Prop(Control.StylePropertyModulateSelf, ButtonColorDisabled),
-// ListContainer
-                Element<ContainerButton>().Class(ListContainer.StyleClassListContainerButton)
-                    .Prop(ContainerButton.StylePropertyStyleBox, listContainerButton),
 
-                Element<ContainerButton>().Class(ListContainer.StyleClassListContainerButton)
-                    .Pseudo(ContainerButton.StylePseudoClassNormal)
-                    .Prop(Control.StylePropertyModulateSelf, new Color(55, 55, 68)),
-
-                Element<ContainerButton>().Class(ListContainer.StyleClassListContainerButton)
-                    .Pseudo(ContainerButton.StylePseudoClassHover)
-                    .Prop(Control.StylePropertyModulateSelf, new Color(75, 75, 86)),
-
-                Element<ContainerButton>().Class(ListContainer.StyleClassListContainerButton)
-                    .Pseudo(ContainerButton.StylePseudoClassPressed)
-                    .Prop(Control.StylePropertyModulateSelf, new Color(75, 75, 86)),
-
-                Element<ContainerButton>().Class(ListContainer.StyleClassListContainerButton)
-                    .Pseudo(ContainerButton.StylePseudoClassDisabled)
-                    .Prop(Control.StylePropertyModulateSelf, new Color(10, 10, 12)),
-
-                // Main menu: Make those buttons bigger.
                 new StyleRule(new SelectorChild(
                     new SelectorElement(typeof(Button), null, "mainMenu", null),
                     new SelectorElement(typeof(Label), null, null, null)),

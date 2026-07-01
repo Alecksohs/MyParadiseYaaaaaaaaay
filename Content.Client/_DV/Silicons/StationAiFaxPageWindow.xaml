@@ -37,8 +37,8 @@
                            HorizontalExpand="True"/>
 
                     <BoxContainer Orientation="Horizontal">
-                        <OptionButton Name="PeerSelector"
-                                      StyleClasses="OpenRight" />
+                        <controls:TguiOptionButton Name="PeerSelector"
+                                                   StyleClasses="OpenRight" />
 
                         <Button StyleClasses="OpenLeft"
                                 Name="RefreshButton"

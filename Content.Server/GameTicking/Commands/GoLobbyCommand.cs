@@ -13,6 +13,7 @@ namespace Content.Server.GameTicking.Commands
         [Dependency] private readonly IConfigurationManager _configManager = default!;
         [Dependency] private readonly GameTicker _gameTicker = default!;
 
+
         public override string Command => "golobby";
 
         public override void Execute(IConsoleShell shell, string argStr, string[] args)

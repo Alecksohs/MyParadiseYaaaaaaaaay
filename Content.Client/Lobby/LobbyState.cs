@@ -60,10 +60,6 @@ namespace Content.Client.Lobby
             var lobbyNameCvar = _cfg.GetCVar(CCVars.ServerLobbyName);
             var serverName = _baseClient.GameInfo?.ServerName ?? string.Empty;
 
-            Lobby.ServerName.Text = string.IsNullOrEmpty(lobbyNameCvar)
-                ? Loc.GetString("ui-lobby-title", ("serverName", serverName))
-                : lobbyNameCvar;
-
             var width = _cfg.GetCVar(CCVars.ServerLobbyRightPanelWidth);
             Lobby.RightSide.SetWidth = width;
 
@@ -137,7 +133,7 @@ namespace Content.Client.Lobby
             {
                 Lobby!.StartTime.Text = string.Empty;
                 var roundTime = _gameTiming.CurTime.Subtract(_gameTicker.RoundStartTimeSpan);
-                Lobby!.StationTime.Text = Loc.GetString("lobby-state-player-status-round-time", ("hours", roundTime.Hours), ("minutes", roundTime.Minutes));
+                Lobby!.StationTime.Text = $"{roundTime.Hours.ToString()}:{roundTime.Minutes.ToString()}";
                 return;
             }
 

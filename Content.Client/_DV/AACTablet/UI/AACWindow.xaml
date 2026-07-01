@@ -21,10 +21,10 @@
 
                         <Control SetWidth="170" Margin="8 0 0 0"/>
 
-                        <OptionButton Name="RadioChannels"
-                                      StyleClasses="OpenBoth"
-                                      SetWidth="120"
-                                      Margin="8 0 0 0"/>
+                        <controls:TguiOptionButton Name="RadioChannels"
+                                          StyleClasses="OpenBoth"
+                                          SetWidth="120"
+                                          Margin="8 0 0 0"/>
                         </BoxContainer>
 
                     <!-- Buffer Display and Controls -->

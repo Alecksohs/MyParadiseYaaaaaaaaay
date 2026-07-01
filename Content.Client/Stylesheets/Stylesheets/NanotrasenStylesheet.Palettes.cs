@@ -9,4 +9,5 @@ public sealed partial class NanotrasenStylesheet
     public override ColorPalette PositivePalette => Palettes.Green;
     public override ColorPalette NegativePalette => Palettes.Red;
     public override ColorPalette HighlightPalette => Palettes.Gold;
+    public override ModalPalette PanelPalette => ModalPalette.FromHexBases("#ff0000", "#ff0000", "#ff0000", "#ff0000");
 }

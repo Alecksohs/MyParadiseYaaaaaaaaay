@@ -9,11 +9,12 @@ using Robust.Client.UserInterface.XAML;
 using Robust.Shared.Prototypes;
 using System.Numerics;
 using System.Linq;
+using Content.Client.UserInterface.Controls;
 
 namespace Content.Client.Access.UI
 {
     [GenerateTypedNameReferences]
-    public sealed partial class AgentIDCardWindow : DefaultWindow
+    public sealed partial class AgentIDCardWindow : FancyWindow
     {
         [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
         [Dependency] private readonly IEntitySystemManager _entitySystem = default!;
