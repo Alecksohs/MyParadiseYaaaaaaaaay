@@ -23,7 +23,8 @@ public abstract class TweenBehaviour : ITweenBehaviour
     public abstract float GetElapsed();
     public virtual bool IsLoopable() => true;
 
-    public virtual void Start() { }
+    public virtual void Start(bool isCompletingInstantly) { }
+
     public virtual void Tick(float deltaTime) { }
     public virtual void Kill() { }
     public virtual void Complete() { }

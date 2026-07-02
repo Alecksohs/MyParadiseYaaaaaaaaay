@@ -11,7 +11,7 @@ public interface ITweenBehaviour
     bool IsLoopable();
     void SetEasing(EasingDelegate easingFunction);
 
-    void Start();
+    void Start(bool isCompletingInstantly);
     void Tick(float delta);
     void Kill();
     void Complete();

@@ -39,7 +39,7 @@ public sealed class TweenInstance
     /// Starts the tween.
     /// </summary>
     /// <param name="isCompletingInstantly">Determines if the tween that's being started, should also complete instantly.</param>
-    public void Start()
+    public void Start(bool isCompletingInstantly = false)
     {
         if (IsPlaying)
         {
@@ -53,7 +53,7 @@ public sealed class TweenInstance
 
         _delayRemaining = Delay;
 
-        Behaviour.Start();
+        Behaviour.Start(isCompletingInstantly);
 
         OnStartAction?.Invoke();
     }

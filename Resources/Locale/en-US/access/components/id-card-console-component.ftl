@@ -9,6 +9,8 @@ id-card-console-window-insert-button = Insert
 id-card-console-window-job-selection-label = Job preset (sets department and job icon):
 id-card-console-window-select-all-button = Grant all
 id-card-console-window-deselect-all-button = Revoke all
+id-card-console-window-login-text = Please insert your ID to log in.
+id-card-console-window-insert-id = Please insert an ID to modify.
 
 access-id-card-console-component-no-hands-error = You have no hands.
 id-card-console-privileged-id = Privileged ID

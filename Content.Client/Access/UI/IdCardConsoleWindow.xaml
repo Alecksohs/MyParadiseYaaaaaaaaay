@@ -63,20 +63,24 @@
         </BoxContainer>
         <!-- Individual access buttons -->
         <PanelContainer StyleClasses="SurfacePrimary" VerticalExpand="True" HorizontalExpand="True">
-            <BoxContainer Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="True">
-                <ScrollContainer HorizontalExpand="True" VerticalExpand="True" SizeFlagsStretchRatio="0.4">
-                    <BoxContainer Name="DepartmentSelectionHolder" Orientation="Vertical" HorizontalExpand="True"
-                                  VerticalExpand="True" SizeFlagsStretchRatio="0.5" Margin="16 8 4 8" SeparationOverride="4">
+            <Control HorizontalExpand="True" VerticalExpand="True" Name="MasterManagerUI">
+                <BoxContainer Name="LoggedInUI" Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="True" Visible="False">
+                    <ScrollContainer HorizontalExpand="True" VerticalExpand="True" SizeFlagsStretchRatio="0.4">
+                        <BoxContainer Name="DepartmentSelectionHolder" Orientation="Vertical" HorizontalExpand="True"
+                                      VerticalExpand="True" SizeFlagsStretchRatio="0.5" Margin="16 8 4 8" SeparationOverride="4">
 
-                    </BoxContainer>
-                </ScrollContainer>
-                <ScrollContainer HorizontalExpand="True" VerticalExpand="True" SizeFlagsStretchRatio="1">
-                    <BoxContainer Name="DepartmentMenuHolder" Orientation="Vertical" HorizontalExpand="True"
-                                  VerticalExpand="True" SizeFlagsStretchRatio="1">
+                        </BoxContainer>
+                    </ScrollContainer>
+                    <ScrollContainer HorizontalExpand="True" VerticalExpand="True" SizeFlagsStretchRatio="1">
+                        <BoxContainer Name="DepartmentMenuHolder" Orientation="Vertical" HorizontalExpand="True"
+                                      VerticalExpand="True" SizeFlagsStretchRatio="1">
 
-                    </BoxContainer>
-                </ScrollContainer>
-            </BoxContainer>
+                        </BoxContainer>
+                    </ScrollContainer>
+                </BoxContainer>
+                <Label Name="LoginText" Text="{Loc 'id-card-console-window-login-text'}" HorizontalAlignment="Center" VerticalAlignment="Center" Visible="True"/>
+                <Label Name="EnterIDText" Text="{Loc 'id-card-console-window-insert-id'}" HorizontalAlignment="Center" VerticalAlignment="Center" Visible="False"/>
+            </Control>
         </PanelContainer>
     </BoxContainer>
 </controls:FancyWindow>

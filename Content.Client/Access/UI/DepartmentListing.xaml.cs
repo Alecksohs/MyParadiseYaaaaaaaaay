@@ -18,6 +18,9 @@ public sealed partial class DepartmentListing : PanelContainer
 
     private ISawmill _sawmill = default!;
 
+    public Action<AccessLevelPrototype, bool>? JobSelectionUpdated;
+
+
     public readonly Dictionary<ProtoId<AccessLevelPrototype>, BaseButton> ButtonsList = new();
 
     public DepartmentListing()
@@ -53,12 +56,16 @@ public sealed partial class DepartmentListing : PanelContainer
                     StyleClasses = { "TguiCheckbox" }
                 };
 
+                newButton.OnToggled += _ => JobSelectionUpdated?.Invoke(accessLevel, newButton.Pressed);
+
                 ButtonsList.Add(accessLevel.ID, newButton);
                 DepartmentListingEntryHolder.AddChild(newButton);
             }
         }
     }
 
+    // reminder that while it's poor design, it's inherited. .pressed is fired off earlier. Where?
+    // IDCardconsoleBoundUserInterface.CS
     public void UpdateState(
         List<ProtoId<AccessLevelPrototype>> pressedList,
         List<ProtoId<AccessLevelPrototype>>? enabledList = null)

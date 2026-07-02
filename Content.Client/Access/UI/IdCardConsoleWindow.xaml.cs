@@ -1,6 +1,10 @@
 using System.Linq;
 using Content.Client.UserInterface;
 using Content.Client.UserInterface.Controls;
+using Content.Client.UserInterface.Tweens;
+using Content.Client.UserInterface.Tweens.Builders;
+using Content.Client.UserInterface.Tweens.Easers;
+using Content.Client.UserInterface.Tweens.Extensions;
 using Content.Shared.Access;
 using Content.Shared.Access.Systems;
 using Content.Shared.CCVar;
@@ -21,9 +25,13 @@ namespace Content.Client.Access.UI
         [Dependency] private readonly IConfigurationManager _cfgManager = default!;
         [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
         [Dependency] private readonly ILogManager _logManager = default!;
+        [Dependency] private readonly IEntityManager _entity = default!;
+
         private readonly ISawmill _logMill = default!;
 
         private readonly IdCardConsoleBoundUserInterface _owner;
+
+        private IdCardConsoleBoundUserInterfaceState? _internalIDCardState;
 
         // CCVar.
         private int _maxNameLength;
@@ -37,11 +45,15 @@ namespace Content.Client.Access.UI
         private string? _lastFullName;
         private string? _lastJobTitle;
         private string? _lastJobProto;
+        private IDConsoleState _uiState;
 
         // The job that will be picked if the ID doesn't have a job on the station.
         private static ProtoId<JobPrototype> _defaultJob = "Passenger";
 
         private (DepartmentPrototype, BaseButton) _currentDepartmentSelectedInternal;
+        private DepartmentListing? _departmentContainer;
+        private readonly TweenManager? _tweenManager;
+
         public (DepartmentPrototype, BaseButton) CurrentDepartmentSelected
         {
             get => _currentDepartmentSelectedInternal;
@@ -60,6 +72,8 @@ namespace Content.Client.Access.UI
             RobustXamlLoader.Load(this);
             IoCManager.InjectDependencies(this);
             _logMill = _logManager.GetSawmill(SharedIdCardConsoleSystem.Sawmill);
+
+            _tweenManager = _entity.System<TweenManager>();
 
             _owner = owner;
 
@@ -85,6 +99,7 @@ namespace Content.Client.Access.UI
             // var jobs = _prototypeManager.EnumeratePrototypes<JobPrototype>().ToList();
             // jobs.Sort((x, y) => string.Compare(x.LocalizedName, y.LocalizedName, StringComparison.CurrentCulture));
 
+            UpdateUIMenu();
 
             departments = new Dictionary<DepartmentPrototype, List<JobPrototype>>();
 
@@ -109,7 +124,7 @@ namespace Content.Client.Access.UI
 
             foreach (var JobPair in departments)
             {
-                if(JobPair.Key.EditorHidden || _blacklistedDepartments.Contains(JobPair.Key.Name))
+                if (JobPair.Key.EditorHidden || _blacklistedDepartments.Contains(JobPair.Key.Name))
                     continue;
                 var departmentButton = new TguiTabButton(false)
                 {
@@ -153,23 +168,40 @@ namespace Content.Client.Access.UI
 
 
             // should we add this to a map?
-            var departmentContainer = new DepartmentListing()
+            _departmentContainer = new DepartmentListing()
             {
                 Name = selectedDepartment.Name,
                 HorizontalExpand = true,
                 VerticalExpand = true,
             };
 
-            departmentContainer.Populate(selectedJobList, prototypeManager);
+            _departmentContainer.Populate(selectedJobList, prototypeManager);
 
-            DepartmentMenuHolder.AddChild(departmentContainer);
-
-            foreach (var (id, button) in departmentContainer.ButtonsList)
+            if (_internalIDCardState != null)
             {
-                button.OnPressed += _ => SubmitData();
+                _departmentContainer?.UpdateState(_internalIDCardState.TargetIdAccessList?.ToList() ??
+                                                  new List<ProtoId<AccessLevelPrototype>>(),
+                    _internalIDCardState.AllowedModifyAccessList?.ToList() ??
+                    new List<ProtoId<AccessLevelPrototype>>());
+            }
+
+            if (_departmentContainer != null)
+            {
+                DepartmentMenuHolder.AddChild(_departmentContainer);
+
+                _departmentContainer.JobSelectionUpdated += JobSelectionUpdated;
             }
         }
 
+        private void JobSelectionUpdated(AccessLevelPrototype obj, bool selected)
+        {
+            if (selected)
+                _internalIDCardState?.TargetIdAccessList?.Add(obj.ID);
+            else
+                _internalIDCardState?.TargetIdAccessList?.Remove(obj.ID);
+
+            SubmitData();
+        }
 
         /// <param name="enabled">If true, every individual access button will be pressed. If false, each will be depressed.</param>
         private void SetAllAccess(bool enabled)
@@ -206,8 +238,15 @@ namespace Content.Client.Access.UI
             SubmitData();
         }
 
+        public void RecieveNewID(IdCardConsoleBoundUserInterfaceState state)
+        {
+            _internalIDCardState = state;
+        }
+
         public void UpdateState(IdCardConsoleBoundUserInterfaceState state)
         {
+            RecieveNewID(state);
+
             PrivilegedIdButton.Text = state.IsPrivilegedIdPresent
                 ? Loc.GetString("id-card-console-window-eject-button")
                 : Loc.GetString("id-card-console-window-insert-button");
@@ -219,6 +258,22 @@ namespace Content.Client.Access.UI
                 : Loc.GetString("id-card-console-window-insert-button");
 
             TargetIdLabel.Text = state.TargetIdName;
+
+            if (state.IsPrivilegedIdPresent && state.IsPrivilegedIdAuthorized && !state.IsTargetIdPresent)
+            {
+                _uiState = IDConsoleState.LoggedIn;
+                UpdateUIMenu();
+            }
+            else if (state.IsPrivilegedIdPresent && state.IsPrivilegedIdAuthorized && state.IsTargetIdPresent)
+            {
+                _uiState = IDConsoleState.IdInserted;
+                UpdateUIMenu();
+            }
+            else
+            {
+                _uiState = IDConsoleState.On;
+                UpdateUIMenu();
+            }
 
             var interfaceEnabled =
                 state.IsPrivilegedIdPresent && state.IsPrivilegedIdAuthorized && state.IsTargetIdPresent;
@@ -246,11 +301,6 @@ namespace Content.Client.Access.UI
 
             JobPresetOptionButton.Disabled = !interfaceEnabled;
 
-            // _accessButtons.UpdateState(state.TargetIdAccessList?.ToList() ??
-            //                            new List<ProtoId<AccessLevelPrototype>>(),
-            //                            state.AllowedModifyAccessList?.ToList() ??
-            //                            new List<ProtoId<AccessLevelPrototype>>());
-
             var jobIndex = _jobPrototypeIds.IndexOf(state.TargetIdJobPrototype);
             // If the job index is < 0 that means they don't have a job registered in the station records
             // or the IdCardComponent's JobPrototype field.
@@ -273,12 +323,90 @@ namespace Content.Client.Access.UI
             var jobProtoDirty = _lastJobProto != null &&
                                 _jobPrototypeIds[JobPresetOptionButton.SelectedId] != _lastJobProto;
 
-            // _owner.SubmitData(
-            //     FullNameLineEdit.Text,
-            //     JobTitleLineEdit.Text,
-            //     // Iterate over the buttons dictionary, filter by `Pressed`, only get key from the key/value pair
-            //     _accessButtons.ButtonsList.Where(x => x.Value.Pressed).Select(x => x.Key).ToList(),
-            //     jobProtoDirty ? _jobPrototypeIds[JobPresetOptionButton.SelectedId] : string.Empty);
+            if (_departmentContainer != null && _internalIDCardState != null)
+            {
+                _owner.SubmitData(
+                    _internalIDCardState.TargetIdName,
+                    _internalIDCardState.TargetIdJobTitle ?? "Unassigned",
+                    // Iterate over the buttons dictionary, filter by `Pressed`, only get key from the key/value pair
+                    _internalIDCardState.TargetIdAccessList ?? new List<ProtoId<AccessLevelPrototype>>(),
+                    jobProtoDirty ? _jobPrototypeIds[JobPresetOptionButton.SelectedId] : string.Empty);
+            }
         }
+
+        #region UI Animations
+
+        private TweenInstance Fade(Color from, Color to)
+        {
+            return TweenExtensions.Tween(
+                    from,
+                    to,
+                    v => MasterManagerUI.Modulate = v,
+                    0.25f)
+                .SetEasing(Easing.OutQuint);
+        }
+
+        private void PlayTransition(Action showScreen)
+        {
+            _tweenManager?.Play(
+                SequentialTweenInstanceBuilder.New()
+                    .Append(Fade(Color.White, Color.Transparent))
+                    .AppendCallback(() =>
+                    {
+                        LoggedInUI.Visible = false;
+                        LoginText.Visible = false;
+                        EnterIDText.Visible = false;
+
+                        showScreen();
+                    })
+                    .Append(Fade(Color.Transparent, Color.White))
+                    .Build()
+            );
+        }
+
+        public void UpdateUIMenu()
+        {
+            switch (_uiState)
+            {
+                case IDConsoleState.On:
+                    PlayTransition(ShowLoginScreen);
+                    break;
+
+                case IDConsoleState.LoggedIn:
+                    PlayTransition(ShowEnterIDScreen);
+                    break;
+
+                case IDConsoleState.IdInserted:
+                    PlayTransition(ShowIDEditScreen);
+                    break;
+            }
+        }
+
+        private void ShowLoginScreen()
+        {
+            MasterManagerUI.ModulateSelfOverride = Color.Transparent;
+            LoginText.Visible = true;
+        }
+
+        private void ShowEnterIDScreen()
+        {
+            MasterManagerUI.ModulateSelfOverride = Color.Transparent;
+            EnterIDText.Visible = true;
+        }
+
+        private void ShowIDEditScreen()
+        {
+            MasterManagerUI.ModulateSelfOverride = Color.Transparent;
+            LoggedInUI.Visible = true;
+        }
+
+        #endregion
+    }
+
+    public enum IDConsoleState
+    {
+        On,
+        LoggedIn,
+        IdInserted,
     }
 }

@@ -50,6 +50,16 @@ public static class TweenExtensions
         );
     }
 
+    public static bool IsPlayingOrCompleted(this TweenInstance tweenInstance)
+    {
+        return tweenInstance.IsPlaying || tweenInstance.IsCompleted;
+    }
+
+    public static bool IsPlayingOrCompletedOrNested(this TweenInstance tweenInstance)
+    {
+        return tweenInstance.IsPlaying || tweenInstance.IsCompleted || tweenInstance.IsNested;
+    }
+
     #region Color
 
     public static TweenInstance Tween(

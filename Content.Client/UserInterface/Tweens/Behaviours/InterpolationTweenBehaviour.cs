@@ -11,7 +11,7 @@ public sealed class InterpolationTweenBehaviour : TweenBehaviour
     private bool _durationCalculated;
     private float _cachedDurationCalculated;
 
-    public override void Start()
+    public override void Start(bool startInstantly)
     {
         StartTweeners();
     }
