@@ -39,12 +39,12 @@
                     <!-- Full name and job title editing. -->
                     <BoxContainer Orientation="Vertical" SeparationOverride="4">
                         <BoxContainer>
-                            <Label Name="FullNameLabel" Text="{Loc 'id-card-console-window-full-name-label'}" />
-                            <LineEdit Name="FullNameLineEdit" HorizontalExpand="True" />
+                            <Label Name="FullNameLabel" Text="{Loc 'id-card-console-window-full-name-label'}" MinWidth="100" />
+                            <LineEdit Name="FullNameLineEdit" HorizontalExpand="True" PlaceHolder="{Loc 'id-card-console-window-placeholder-fullname'}" />
                         </BoxContainer>
                         <BoxContainer>
-                            <Label Name="JobTitleLabel" Text="{Loc 'id-card-console-window-job-title-label'}" />
-                            <LineEdit Name="JobTitleLineEdit" HorizontalExpand="True" />
+                            <Label Name="JobTitleLabel" Text="{Loc 'id-card-console-window-job-title-label'}" MinWidth="100"/>
+                            <LineEdit Name="JobTitleLineEdit" HorizontalExpand="True" PlaceHolder="{Loc 'id-card-console-window-placeholder-assignment'}"/>
                         </BoxContainer>
                     </BoxContainer>
                 </BoxContainer>
