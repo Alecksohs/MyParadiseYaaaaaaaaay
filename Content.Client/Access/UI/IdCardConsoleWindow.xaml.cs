@@ -46,6 +46,7 @@ namespace Content.Client.Access.UI
         private string? _lastJobTitle;
         private string? _lastJobProto;
         private IDConsoleState _uiState;
+        private IDConsoleState? _oldUIState;
 
         // The job that will be picked if the ID doesn't have a job on the station.
         private static ProtoId<JobPrototype> _defaultJob = "Passenger";
@@ -80,21 +81,19 @@ namespace Content.Client.Access.UI
             _maxNameLength = _cfgManager.GetCVar(CCVars.MaxNameLength);
             _maxIdJobLength = _cfgManager.GetCVar(CCVars.MaxIdJobLength);
 
-            FullNameLineEdit.OnTextEntered += _ => SubmitData();
+            FullNameLineEdit.OnTextEntered += arg2 =>
+            {
+                _internalIDCardState?.TargetIdName = arg2.Text;
+                SubmitData();
+            };
             FullNameLineEdit.IsValid = s => s.Length <= _maxNameLength;
-            FullNameLineEdit.OnTextChanged += _ =>
-            {
-                FullNameSaveButton.Disabled = FullNameSaveButton.Text == _lastFullName;
-            };
-            FullNameSaveButton.OnPressed += _ => SubmitData();
 
-            JobTitleLineEdit.OnTextEntered += _ => SubmitData();
-            JobTitleLineEdit.IsValid = s => s.Length <= _maxIdJobLength;
-            JobTitleLineEdit.OnTextChanged += _ =>
+            JobTitleLineEdit.OnTextEntered += arg =>
             {
-                JobTitleSaveButton.Disabled = JobTitleLineEdit.Text == _lastJobTitle;
+                _internalIDCardState?.TargetIdName = arg.Text;
+                SubmitData();
             };
-            JobTitleSaveButton.OnPressed += _ => SubmitData();
+            JobTitleLineEdit.IsValid = s => s.Length <= _maxIdJobLength;
 
             // var jobs = _prototypeManager.EnumeratePrototypes<JobPrototype>().ToList();
             // jobs.Sort((x, y) => string.Compare(x.LocalizedName, y.LocalizedName, StringComparison.CurrentCulture));
@@ -288,7 +287,6 @@ namespace Content.Client.Access.UI
                 FullNameLineEdit.Text = state.TargetIdFullName ?? string.Empty;
             }
 
-            FullNameSaveButton.Disabled = !interfaceEnabled || !fullNameDirty;
 
             JobTitleLabel.Modulate = interfaceEnabled ? Color.White : Color.Gray;
             JobTitleLineEdit.Editable = interfaceEnabled;
@@ -296,8 +294,6 @@ namespace Content.Client.Access.UI
             {
                 JobTitleLineEdit.Text = state.TargetIdJobTitle ?? string.Empty;
             }
-
-            JobTitleSaveButton.Disabled = !interfaceEnabled || !jobTitleDirty;
 
             JobPresetOptionButton.Disabled = !interfaceEnabled;
 
@@ -366,6 +362,11 @@ namespace Content.Client.Access.UI
 
         public void UpdateUIMenu()
         {
+            if (_oldUIState != null && _oldUIState == _uiState)
+            {
+                return;
+            }
+
             switch (_uiState)
             {
                 case IDConsoleState.On:
@@ -380,6 +381,7 @@ namespace Content.Client.Access.UI
                     PlayTransition(ShowIDEditScreen);
                     break;
             }
+            _oldUIState = _uiState;
         }
 
         private void ShowLoginScreen()

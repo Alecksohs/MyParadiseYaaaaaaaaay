@@ -28,11 +28,11 @@ public sealed class DividersSheetlet : Sheetlet<PalettedStylesheet>
             E<PanelContainer>()
                 .Class(StyleClass.LowDivider)
                 .Panel(boxLowDivider)
-                .MinSize(new Vector2(3, 3)),
+                .MinSize(new Vector2(2, 2)),
             E<PanelContainer>()
                 .Class(StyleClass.LowDividerLowAlpha)
                 .Panel(boxLowDividerLowAlpha)
-                .MinSize(new Vector2(3, 3)),
+                .MinSize(new Vector2(2, 2)),
 
             E<PanelContainer>().Class(StyleClass.HighDivider).Panel(boxHighDivider),
         ];
