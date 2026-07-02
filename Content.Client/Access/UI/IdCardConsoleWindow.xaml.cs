@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Client.UserInterface;
 using Content.Client.UserInterface.Controls;
 using Content.Shared.Access;
 using Content.Shared.Access.Systems;
@@ -39,7 +40,18 @@ namespace Content.Client.Access.UI
 
         // The job that will be picked if the ID doesn't have a job on the station.
         private static ProtoId<JobPrototype> _defaultJob = "Passenger";
-        public (DepartmentPrototype, BaseButton) CurrentDepartmentSelected { get; set; }
+
+        private (DepartmentPrototype, BaseButton) _currentDepartmentSelectedInternal;
+        public (DepartmentPrototype, BaseButton) CurrentDepartmentSelected
+        {
+            get => _currentDepartmentSelectedInternal;
+            set
+            {
+                _currentDepartmentSelectedInternal.Item2?.Pressed = false;
+                _currentDepartmentSelectedInternal = value;
+                _currentDepartmentSelectedInternal.Item2.Pressed = true;
+            }
+        }
 
         public IdCardConsoleWindow(IdCardConsoleBoundUserInterface owner,
             IPrototypeManager prototypeManager,
@@ -99,11 +111,11 @@ namespace Content.Client.Access.UI
             {
                 if(JobPair.Key.EditorHidden || _blacklistedDepartments.Contains(JobPair.Key.Name))
                     continue;
-                var departmentButton = new Button()
+                var departmentButton = new TguiTabButton(false)
                 {
                     Name = $"{JobPair.Key.Name}_button",
                     Text = Loc.GetString(JobPair.Key.Name),
-                    StyleClasses = { "latheCategoryButton" }
+                    StyleClasses = { "categoryButton" },
                 };
 
                 departmentButton.OnPressed += button =>

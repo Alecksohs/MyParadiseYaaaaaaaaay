@@ -1,7 +1,9 @@
 ﻿using System.Numerics;
+using Content.Client.Stylesheets.Colorspace;
 using Content.Client.Stylesheets.SheetletConfigs;
 using Content.Client.Stylesheets.Stylesheets;
 using Content.Client.UserInterface;
+using Robust.Client.Graphics;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Utility;
@@ -28,22 +30,40 @@ public sealed class CheckboxSheetlet<T> : Sheetlet<T> where T : PalettedStyleshe
             BorderColor = sheet.PanelPalette.PanelBorderColor,
             BackgroundColor = sheet.PanelPalette.PanelSecondary,
             CornerRadius = new Vector4(sheet.PanelPalette.PanelCornerRadius * 2),
-            ContentMarginBottomOverride = 4,
-            ContentMarginLeftOverride = 4,
-            ContentMarginRightOverride = 4,
-            ContentMarginTopOverride = 4,
         };
         var checkedBoxBackground = new StyleBoxSDFBox()
         {
             BorderThickness = sheet.PanelPalette.PanelBorderThickness,
             BorderColor = sheet.PositivePalette.Element,
-            BackgroundColor = sheet.PanelPalette.PanelSecondary,
+            BackgroundColor = sheet.PositivePalette.Background.WithAlpha(.50f).NudgeLightness(-0.1f),
             CornerRadius = new Vector4(sheet.PanelPalette.PanelCornerRadius * 2),
-            ContentMarginBottomOverride = 4,
-            ContentMarginLeftOverride = 4,
-            ContentMarginRightOverride = 4,
-            ContentMarginTopOverride = 4,
         };
+
+        var selectedHandleBox = new StyleBoxSDFBox()
+        {
+            BackgroundColor = sheet.PanelPalette.PanelBorderColor.NudgeLightness(0.2f),
+        };
+
+        var roundedconfig = new Vector4(
+            sheet.PanelPalette.PanelCornerRadius * 3,
+            sheet.PanelPalette.PanelCornerRadius * 3,
+            0,
+            0);
+
+        var tabContainerBoxActive = new StyleBoxSDFBox(sheet.PanelPalette.PanelPrimary)
+        {
+            CornerRadius = roundedconfig,
+            BorderColor = sheet.PanelPalette.PanelBorderColor.NudgeLightness(0.2f),
+            BorderThickness = (sheet.PanelPalette.PanelBorderThickness),
+
+        };
+        var tabContainerBoxInactive = new StyleBoxSDFBox(sheet.PanelPalette.PanelPrimary)
+        {
+            CornerRadius =
+                roundedconfig,
+        };
+
+
         return
         [
             E<TextureRect>()
@@ -69,6 +89,10 @@ public sealed class CheckboxSheetlet<T> : Sheetlet<T> where T : PalettedStyleshe
                 .Prop(TguiCheckBox.StyleClassUncheckedColor, sheet.PanelPalette.PanelBorderColor)
                 .Prop(TguiCheckBox.StyleClassCheckedColor, sheet.PositivePalette.Element),
             E<BoxContainer>().Class("TguiCheckbox").Prop(BoxContainer.StylePropertySeparation, 10),
+            E<PanelContainer>().Class("selectionHandle").Prop(PanelContainer.StylePropertyPanel,selectedHandleBox),
+            E<TguiTabButton>().Prop(ContainerButton.StylePropertyStyleBox,tabContainerBoxInactive),
+            E<TguiTabButton>().Class("checked")
+                .Prop(ContainerButton.StylePropertyStyleBox,tabContainerBoxActive),
         ];
     }
 }
