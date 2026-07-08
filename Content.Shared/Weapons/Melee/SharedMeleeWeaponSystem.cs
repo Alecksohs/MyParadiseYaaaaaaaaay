@@ -935,13 +935,9 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
             _meleeSound.PlaySwingSound(user, meleeUid, component);
             return true;
         }
-
-        if (_random.Prob(chance))
-        {
-            return false;
-        }
-
-        var eventArgs = new DisarmedEvent(target.Value, user, 1 - chance);
+        
+        var dir = TransformSystem.GetWorldPosition(target.Value) - TransformSystem.GetWorldPosition(user); // Paradise - RealShove
+        var eventArgs = new DisarmedEvent(target.Value, user, dir.Normalized());
         RaiseLocalEvent(target.Value, ref eventArgs);
 
         // Nothing handled it so abort.

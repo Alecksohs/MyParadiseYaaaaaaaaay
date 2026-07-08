@@ -1,7 +1,9 @@
+using System.Numerics;
+
 namespace Content.Shared.CombatMode;
 
 [ByRefEvent]
-public record struct DisarmedEvent(EntityUid Target, EntityUid Source, float PushProb)
+public record struct DisarmedEvent(EntityUid Target, EntityUid Source, Vector2 PushDirection)
 {
     /// <summary>
     /// The entity being disarmed.
@@ -13,10 +15,8 @@ public record struct DisarmedEvent(EntityUid Target, EntityUid Source, float Pus
     /// </summary>
     public readonly EntityUid Source = Source;
 
-    /// <summary>
-    /// Probability for push/knockdown.
-    /// </summary>
-    public readonly float PushProbability = PushProb;
+    public readonly Vector2 PushDirection = PushDirection;
+
 
     /// <summary>
     /// Prefix for the popup message that will be displayed on a successful push.

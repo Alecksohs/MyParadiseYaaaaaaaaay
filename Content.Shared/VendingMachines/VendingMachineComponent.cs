@@ -18,6 +18,12 @@ namespace Content.Shared.VendingMachines
         public string PackPrototypeId = string.Empty;
 
         /// <summary>
+        /// When Vending Machine is tipped over, deal this damage to who it's hit.
+        /// </summary>
+        [DataField]
+        public float TipDamage = 50f;
+
+        /// <summary>
         /// Used by the server to determine how long the vending machine stays in the "Deny" state.
         /// Used by the client to determine how long the deny animation should be played.
         /// </summary>
@@ -77,6 +83,9 @@ namespace Content.Shared.VendingMachines
         public bool CanShoot = false;
 
         public bool ThrowNextItem = false;
+
+        [ViewVariables]
+        public bool IsTipped = false;
 
         /// <summary>
         ///     The chance that a vending machine will randomly dispense an item on hit.
@@ -303,5 +312,7 @@ namespace Content.Shared.VendingMachines
         public TimeSpan? DispenseOnHitEnd;
 
         public bool Broken;
+
+        public bool Tipped;
     }
 }

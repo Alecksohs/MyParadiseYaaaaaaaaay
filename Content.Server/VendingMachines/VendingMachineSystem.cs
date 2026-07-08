@@ -4,7 +4,6 @@ using Content.Server.Cargo.Systems;
 using Content.Server.Power.Components;
 using Content.Server.Vocalization.Systems;
 using Content.Shared.Cargo;
-using Content.Shared.Damage;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Emp;
 using Content.Shared.Power;
@@ -22,7 +21,9 @@ namespace Content.Server.VendingMachines
         [Dependency] private readonly PricingSystem _pricing = default!;
         [Dependency] private readonly ThrowingSystem _throwingSystem = default!;
 
+
         private const float WallVendEjectDistanceFromWall = 1f;
+        private const float TipDamage = 50f;
 
         public override void Initialize()
         {
@@ -37,6 +38,8 @@ namespace Content.Server.VendingMachines
 
             SubscribeLocalEvent<VendingMachineRestockComponent, PriceCalculationEvent>(OnPriceCalculation);
         }
+
+
 
         private void OnVendingPrice(EntityUid uid, VendingMachineComponent component, ref PriceCalculationEvent args)
         {
