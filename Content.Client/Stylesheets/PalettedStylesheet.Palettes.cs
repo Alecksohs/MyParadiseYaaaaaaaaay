@@ -10,4 +10,5 @@ public abstract partial class PalettedStylesheet
     public abstract ColorPalette NegativePalette { get; }
     public abstract ColorPalette HighlightPalette { get; }
     public abstract ModalPalette PanelPalette { get; }
+    public abstract SemanticPalette SemanticPalette { get; }
 }

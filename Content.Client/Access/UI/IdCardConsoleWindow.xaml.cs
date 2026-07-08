@@ -90,7 +90,7 @@ namespace Content.Client.Access.UI
 
             JobTitleLineEdit.OnTextEntered += arg =>
             {
-                _internalIDCardState?.TargetIdName = arg.Text;
+                _internalIDCardState?.TargetIdJobTitle = arg.Text;
                 SubmitData();
             };
             JobTitleLineEdit.IsValid = s => s.Length <= _maxIdJobLength;

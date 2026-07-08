@@ -58,6 +58,8 @@ namespace Content.Client.UserInterface
             _leftAlign = leftAlign;
             ToggleMode = true;
 
+
+
             var hBox = new BoxContainer
             {
                 Orientation = BoxContainer.LayoutOrientation.Horizontal,
@@ -71,7 +73,7 @@ namespace Content.Client.UserInterface
             };
             var spacer = new Control{Name = "spacer", HorizontalExpand = true};
 
-            selectedRect = new PanelContainer{ModulateSelfOverride = CheckedColor, VerticalExpand = true, SetWidth = 8f, StyleClasses = { "selectionHandle" },};
+            selectedRect = new PanelContainer{ModulateSelfOverride = CheckedColor, VerticalExpand = true, SetWidth = 0f, StyleClasses = { "selectionHandle" },};
 
             if (_leftAlign)
             {

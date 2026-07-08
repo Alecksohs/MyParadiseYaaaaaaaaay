@@ -20,7 +20,9 @@ namespace Content.Client.Stylesheets
 
         public Stylesheet SheetNanotrasen { get; private set; } = default!;
         public Stylesheet SheetSystem { get; private set; } = default!;
-        public Stylesheet SheetOasis { get; private set; } = default!;
+        public Stylesheet SheetParadise { get; private set; } = default!;
+
+        public Stylesheet SheetSyndicate { get; private set; } = default!;
 
         [Obsolete("Update to use SheetNanotrasen instead")]
         public Stylesheet SheetNano { get; private set; } = default!;
@@ -50,11 +52,13 @@ namespace Content.Client.Stylesheets
             Stylesheets = new Dictionary<string, Stylesheet>();
             SheetNanotrasen = Init(new NanotrasenStylesheet(new BaseStylesheet.NoConfig(), this));
             SheetSystem = Init(new SystemStylesheet(new BaseStylesheet.NoConfig(), this));
-            SheetOasis = Init(new ParadiseStylesheet(new BaseStylesheet.NoConfig(), this));
+            SheetParadise = Init(new ParadiseStylesheet(new BaseStylesheet.NoConfig(), this));
+            SheetSyndicate = Init(new SyndicateParadiseStylesheet(new BaseStylesheet.NoConfig(), this));
+
             SheetNano = new StyleNano(_resCache).Stylesheet; // TODO: REMOVE (obsolete)
             SheetSpace = new StyleSpace(_resCache).Stylesheet; // TODO: REMOVE (obsolete)
 
-            _userInterfaceManager.Stylesheet = SheetOasis;
+            _userInterfaceManager.Stylesheet = SheetParadise;
 
             // warn about unused sheetlets
             if (UnusedSheetlets.Count > 0)

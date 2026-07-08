@@ -2,6 +2,7 @@ using System.Linq;
 using System.Text;
 using Content.Client.Actions;
 using Content.Client.Message;
+using Content.Client.UserInterface;
 using Content.Client.UserInterface.Controls;
 using Content.Shared.FixedPoint;
 using Content.Shared.Store;
@@ -261,14 +262,14 @@ public sealed partial class StoreMenu : FancyWindow
         var group = new ButtonGroup();
         foreach (var proto in allCategories)
         {
-            var catButton = new StoreCategoryButton
+            var catButton = new StoreCategoryButton(false)
             {
                 Text = Loc.GetString(proto.Name),
                 Id = proto.ID,
                 Pressed = proto.ID == CurrentCategory,
                 Group = group,
                 ToggleMode = true,
-                StyleClasses = { "OpenBoth" }
+                StyleClasses = { "categoryButton" },
             };
 
             catButton.OnPressed += args => OnCategoryButtonPressed?.Invoke(args, catButton.Id);
@@ -287,7 +288,7 @@ public sealed partial class StoreMenu : FancyWindow
         RefundButton.Visible = allowRefund;
     }
 
-    private sealed class StoreCategoryButton : Button
+    private sealed class StoreCategoryButton(bool leftAlign) : TguiTabButton(leftAlign)
     {
         public string? Id;
     }

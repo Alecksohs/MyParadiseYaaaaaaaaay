@@ -113,6 +113,7 @@ public sealed class NetworkConfiguratorSystem : SharedNetworkConfiguratorSystem
             _configurator = configurator;
             _keyBindingName = keyBindingName;
             _label = new RichTextLabel { StyleClasses = { StyleClass.ItemStatus } };
+            _label.LineHeightScale = 0.8f;
             AddChild(_label);
         }
 

@@ -101,7 +101,7 @@ namespace Content.Client.Stylesheets
             };
             BaseAngleRect.SetPatchMargin(StyleBox.Margin.All, 10);
 
-            AngleBorderRect = new StyleBoxTexture
+                AngleBorderRect = new StyleBoxTexture
             {
                 Texture = resCache.GetTexture("/Textures/Interface/Nano/geometric_panel_border.svg.96dpi.png"),
             };

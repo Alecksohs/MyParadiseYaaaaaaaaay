@@ -79,7 +79,7 @@ namespace Content.Client.VendingMachines.UI
             var item = new VendingMachineItem(protoID, text);
             _listItems[protoID] = (button, item);
             button.AddChild(item);
-            button.AddStyleClass(StyleClass.ButtonSquare);
+            button.AddStyleClass("transparentButton");
             button.Disabled = !_enabled || _amounts[protoID] == 0;
         }
 

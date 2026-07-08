@@ -18,12 +18,16 @@ public sealed class TooltipSheetlet<T> : Sheetlet<T> where T: PalettedStylesheet
     {
         ITooltipConfig tooltipCfg = sheet;
 
-        var tooltipBox = new StyleBoxSDFBox
+        var tooltipBox = new StyleBoxSDFBox()
         {
-            BackgroundColor = sheet.PanelPalette.Background,
-            BorderThickness = 0.25f,
-            BorderColor = sheet.PanelPalette.PanelBorderColor.WithAlpha(sheet.PanelPalette.PanelBorderColor.A * 0.25f),
-            CornerRadius = new Vector4(2f),
+            BackgroundColor = sheet.PanelPalette.PanelPrimary.WithAlpha(0.9f),
+            BorderThickness = sheet.PanelPalette.PanelBorderThickness,
+            BorderColor = sheet.PanelPalette.PanelBorderColor,
+            CornerRadius = new Vector4(sheet.PanelPalette.PanelCornerRadius),
+            ContentMarginBottomOverride = 8,
+            ContentMarginLeftOverride = 8,
+            ContentMarginRightOverride = 8,
+            ContentMarginTopOverride = 8,
         };
 
         var whisperBox = sheet.GetTextureOr(tooltipCfg.WhisperBoxPath, NanotrasenStylesheet.TextureRoot)
@@ -33,8 +37,7 @@ public sealed class TooltipSheetlet<T> : Sheetlet<T> where T: PalettedStylesheet
         return
         [
             E<PanelContainer>()
-                .Class(StyleClass.TooltipPanel)
-                .Modulate(Color.Gray.WithAlpha(0.9f)) // TODO: you know the drill by now
+                .Class(StyleClass.TooltipPanel) // TODO: you know the drill by now
                 .Panel(tooltipBox),
             E<RichTextLabel>()
                 .Class(StyleClass.TooltipTitle)

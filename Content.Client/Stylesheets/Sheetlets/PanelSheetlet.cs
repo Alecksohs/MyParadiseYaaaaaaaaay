@@ -74,6 +74,16 @@ public sealed class PanelSheetlet<T> : Sheetlet<T> where T : PalettedStylesheet,
             CornerRadius = new Vector4(sheet.PanelPalette.PanelCornerRadius),
         };
 
+        var roundedButton = new StyleBoxSDFBox()
+        {
+            CornerRadius = new Vector4(2f),
+            BackgroundColor = sheet.PrimaryPalette.Base,
+            ContentMarginTopOverride = 2,
+            ContentMarginBottomOverride = 2,
+            ContentMarginLeftOverride = 4,
+            ContentMarginRightOverride = 4,
+        };
+
         //Oasis End
 
         return
@@ -104,6 +114,10 @@ public sealed class PanelSheetlet<T> : Sheetlet<T> where T : PalettedStylesheet,
                 .Panel(panelTertiary),
 
             E<PanelContainer>()
+                .Class(StyleClass.SurfaceTertiary)
+                .Panel(panelTertiary),
+
+            E<PanelContainer>()
                 .Class(StyleClass.SurfaceBackground)
                 .Panel(panelBackground),
             E<PanelContainer>()
@@ -113,6 +127,8 @@ public sealed class PanelSheetlet<T> : Sheetlet<T> where T : PalettedStylesheet,
             E<PanelContainer>()
                 .Class(StyleClass.ListView)
                 .Panel(listViewPanel),
+
+            E<PanelContainer>().Class(Button.StyleClassButton).Prop(PanelContainer.StylePropertyPanel, roundedButton),
 
             // panels that have the same corner bezels as buttons
             E()

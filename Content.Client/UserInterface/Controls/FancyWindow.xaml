@@ -6,16 +6,18 @@
                       MinWidth="200" MinHeight="150">
     <PanelContainer StyleClasses="BackgroundPanel" />
 
+
     <TextureRect
         TexturePath="/Textures/Interface/Nano/BG_NTLogo.png"
         Stretch="KeepAspectCentered"
         HorizontalAlignment="Center"
         VerticalAlignment="Center"
-        Modulate="#00000055"/>
+        Modulate="#00000055"
+        Name="BackgroundIcon"/>
 
     <BoxContainer Orientation="Vertical">
         <Control>
-            <PanelContainer StyleClasses="WindowHeadingBackground" Name="WindowHeader" />
+            <PanelContainer StyleClasses="windowHeader" Name="WindowHeader" />
             <BoxContainer Orientation="Horizontal">
                 <Label Name="WindowTitle"
                        HorizontalExpand="True" VAlign="Center" StyleClasses="FancyWindowTitle" ClipText="true" Margin="8 8 8 4" />

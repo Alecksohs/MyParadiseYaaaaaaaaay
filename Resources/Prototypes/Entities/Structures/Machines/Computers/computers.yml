@@ -208,6 +208,8 @@
     color: "#c94242"
   - type: Computer
     board: SyndicateShuttleConsoleCircuitboard
+  - type: Stylesheet
+    stylesheet: SyndicateParadise
 
 - type: entity
   parent: BaseComputerShuttle
@@ -294,6 +296,8 @@
           type: WiresBoundUserInterface
   - type: Computer
     board: ComputerIFFSyndicateCircuitboard
+  - type: Stylesheet
+    stylesheet: SyndicateParadise
 
 - type: entity
   parent: BaseComputerAiAccess
@@ -376,7 +380,7 @@
   parent: BaseComputerAiAccess
   id: ComputerCriminalRecords
   name: criminal records computer
-  description: This can be used to check criminal records. Only security and justice can modify them. # DeltaV Justice can access too 
+  description: This can be used to check criminal records. Only security and justice can modify them. # DeltaV Justice can access too
   components:
   - type: CriminalRecordsConsole
   - type: UserInterface
@@ -412,7 +416,7 @@
   - type: Computer
     board: CriminalRecordsComputerCircuitboard
   - type: AccessReader
-    access: [["Security"], ["Justice"]] # DeltaV Justice can access too 
+    access: [["Security"], ["Justice"]] # DeltaV Justice can access too
   - type: GuideHelp
     guides:
     - CriminalRecords
@@ -750,6 +754,8 @@
     radius: 1.5
     energy: 4.0
     color: "#f71713"
+  - type: Stylesheet
+    stylesheet: SyndicateParadise
 
 - type: entity
   parent: ComputerComms

@@ -110,7 +110,7 @@ public sealed partial class IdCardConsoleComponent : Component
         public readonly bool IsTargetIdPresent;
         public string TargetIdName;
         public readonly string? TargetIdFullName;
-        public readonly string? TargetIdJobTitle;
+        public string? TargetIdJobTitle;
         public readonly List<ProtoId<AccessLevelPrototype>>? TargetIdAccessList;
         public readonly List<ProtoId<AccessLevelPrototype>>? AllowedModifyAccessList;
         public readonly ProtoId<JobPrototype> TargetIdJobPrototype;

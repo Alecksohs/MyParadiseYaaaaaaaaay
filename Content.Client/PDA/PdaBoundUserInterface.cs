@@ -89,9 +89,6 @@ namespace Content.Client.PDA
             if (borderColorComponent == null)
                 return;
 
-            _menu.BorderColor = borderColorComponent.BorderColor;
-            _menu.AccentHColor = borderColorComponent.AccentHColor;
-            _menu.AccentVColor = borderColorComponent.AccentVColor;
         }
 
         protected override void UpdateState(BoundUserInterfaceState state)
@@ -122,7 +119,7 @@ namespace Content.Client.PDA
             if (_menu is null)
                 return;
 
-            _menu.ToHomeScreen();
+            _menu.ToHomeScreen(false);
             _menu.HideProgramHeader();
             _menu.ProgramView.RemoveChild(cartridgeUIFragment);
         }

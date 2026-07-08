@@ -74,6 +74,7 @@ public static class StyleClass
     public const string SurfacePrimary = "SurfacePrimary";
     public const string SurfaceSecondary = "SurfaceSecondary";
     public const string SurfaceTertiary = "SurfaceTertiary";
+    public const string SurfaceSunken = "SurfaceSunken";
     public const string SurfaceBackground = "SurfaceBackground";
 
     public const string AccentPrimary = "AccentPrimary";

@@ -1581,14 +1581,6 @@ namespace Content.Client.Stylesheets
                     .Prop(PdaSettingsButton.StylePropertyBgColor, Color.FromHex(PdaSettingsButton.NormalBgColor))
                     .Prop(PdaSettingsButton.StylePropertyFgColor, Color.FromHex(PdaSettingsButton.DisabledFgColor)),
 
-                Element<PdaProgramItem>().Pseudo(ContainerButton.StylePseudoClassNormal)
-                    .Prop(PdaProgramItem.StylePropertyBgColor, Color.FromHex(PdaProgramItem.NormalBgColor)),
-
-                Element<PdaProgramItem>().Pseudo(ContainerButton.StylePseudoClassHover)
-                    .Prop(PdaProgramItem.StylePropertyBgColor, Color.FromHex(PdaProgramItem.HoverColor)),
-
-                Element<PdaProgramItem>().Pseudo(ContainerButton.StylePseudoClassPressed)
-                    .Prop(PdaProgramItem.StylePropertyBgColor, Color.FromHex(PdaProgramItem.HoverColor)),
 
                 //PDA - Text
                 Element<Label>().Class("PdaContentFooterText")

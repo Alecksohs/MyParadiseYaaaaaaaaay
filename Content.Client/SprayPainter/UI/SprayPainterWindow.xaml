@@ -3,5 +3,5 @@
              MinSize="520 300"
              SetSize="520 700"
              Title="{Loc 'spray-painter-window-title'}">
-       <TabContainer Name="Tabs"/>
+       <TabContainer Name="Tabs" Margin="8"/>
 </controls:FancyWindow>

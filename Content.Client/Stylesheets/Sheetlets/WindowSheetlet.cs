@@ -24,11 +24,9 @@ public sealed class WindowSheetlet<T> : Sheetlet<T>
         IWindowConfig windowCfg = sheet;
         IIconConfig iconCfg = sheet;
 
-        var headerStylebox = new StyleBoxTexture
+        var headerStylebox = new StyleBoxSDFBox()
         {
-            Texture = sheet.GetTextureOr(windowCfg.WindowHeaderTexturePath, NanotrasenStylesheet.TextureRoot),
-            PatchMarginBottom = 3,
-            ExpandMarginBottom = 3,
+            BackgroundColor = sheet.PanelPalette.Background.NudgeLightness(0.04f),
             ContentMarginBottomOverride = 0,
         };
         // TODO: This would probably be better palette-based but we can leave it for now.
@@ -45,8 +43,8 @@ public sealed class WindowSheetlet<T> : Sheetlet<T>
             BorderThickness = sheet.PanelPalette.PanelBorderThickness,
             CornerRadius = Vector4.Zero,
             DoGradient = true,
-            BackgroundColor = sheet.PanelPalette.Background.NudgeLightness(0.02f),
-            GradientBottomColor = sheet.PanelPalette.Background.NudgeLightness(-0.02f),
+            BackgroundColor = sheet.PanelPalette.Background.NudgeLightness(0.00f),
+            GradientBottomColor = sheet.PanelPalette.Background.NudgeLightness(-0.06f),
         };
         var borderedBackgroundBox = new StyleBoxTexture
         {

@@ -299,6 +299,8 @@
     guides:
     - Bartender
     - Drinks
+  - type: Stylesheet
+    stylesheet: SyndicateParadise
 
 - type: entity
   parent: VendingMachine
@@ -2015,6 +2017,8 @@
     color: "#d82929"
   - type: AccessReader
     access: [["NuclearOperative"], ["SyndicateAgent"]]
+  - type: Stylesheet
+    stylesheet: SyndicateParadise
 
 - type: entity
   parent: VendingMachine
@@ -2286,6 +2290,8 @@
     # End DeltaV Additions
   - type: AccessReader
     access: [["SyndicateAgent"]]
+  - type: Stylesheet
+    stylesheet: SyndicateParadise
 
 # wallmount
 - type: entity

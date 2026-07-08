@@ -11,7 +11,7 @@ public sealed class CloseContainerButton : ContainerForkedButton
 
     public CloseContainerButton()
     {
-        if(GetStyleBoxOverride() is StyleBoxIconBox styleBoxIconBox)
+        if(GetStyleBox() is StyleBoxIconBox styleBoxIconBox)
         {
             styleBoxRefl = styleBoxIconBox;
         }
@@ -21,7 +21,7 @@ public sealed class CloseContainerButton : ContainerForkedButton
 
     private void UpdateStyleBoxRef()
     {
-        if(GetStyleBoxOverride() is StyleBoxIconBox styleBoxIconBox)
+        if(GetStyleBox() is StyleBoxIconBox styleBoxIconBox)
         {
             styleBoxRefl = styleBoxIconBox;
         }

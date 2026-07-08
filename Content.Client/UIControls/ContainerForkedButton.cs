@@ -21,7 +21,7 @@ namespace Content.Client.UIControls
 
         protected event Action? StyleBoxOverridden;
 
-        public StyleBox GetStyleBoxOverride()
+        public StyleBox GetStyleBox()
         {
             return _actualStyleBox;
         }

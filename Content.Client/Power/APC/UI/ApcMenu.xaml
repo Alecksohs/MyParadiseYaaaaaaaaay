@@ -4,7 +4,8 @@
     xmlns:style="clr-namespace:Content.Client.Stylesheets"
     Name="APCMenu"
     Title="{Loc 'apc-menu-title'}"
-    Resizable="False">
+    Resizable="False"
+    MinSize="300 125" HideIcon="True">
 
     <BoxContainer Orientation="Vertical">
         <BoxContainer Margin="0 5 10 10" Orientation="Vertical">
@@ -39,7 +40,8 @@
                         MinHeight = "25"
                         Page="0"
                         Margin="10 10 0 0"
-                        Value="0.5">
+                        Value="0.5"
+                        StyleClasses="TguiProgressBar">
                 <Label Name="ChargePercentage" Margin="4 0" Text="0 %" />
             </ProgressBar>
         </BoxContainer>
