@@ -29,36 +29,35 @@ namespace Content.Client.Atmos.UI
             _window = this.CreateWindow<GasMixerWindow>();
 
             _window.ToggleStatusButtonPressed += OnToggleStatusButtonPressed;
-            _window.MixerOutputPressureChanged += OnMixerOutputPressurePressed;
-            _window.MixerNodePercentageChanged += OnMixerSetPercentagePressed;
+            _window.MixerNodeDataSet += RecieveMixerState;
+        }
+
+        private void RecieveMixerState(GasMixerState obj)
+        {
+            OnMixerOutputPressurePressed(obj.OutputPressure);
+            OnMixerDataSet(obj.MixerOneNodePercentage);
         }
 
         private void OnToggleStatusButtonPressed()
         {
             if (_window is null) return;
-            SendMessage(new GasMixerToggleStatusMessage(_window.MixerStatus));
+            SendMessage(new GasMixerToggleStatusMessage(_window.MixerState.Enabled));
         }
 
-        private void OnMixerOutputPressurePressed(string value)
+        private void OnMixerOutputPressurePressed(float outputPressure)
         {
-            var pressure = UserInputParser.TryFloat(value, out var parsed) ? parsed : 0f;
+            var pressure = outputPressure;
             if (pressure > MaxPressure)
                 pressure = MaxPressure;
 
             SendMessage(new GasMixerChangeOutputPressureMessage(pressure));
         }
 
-        private void OnMixerSetPercentagePressed(string value)
+        private void OnMixerDataSet(float nodeA)
         {
-            // We don't need to send both nodes because it's just 100.0f - node
-            var node = UserInputParser.TryFloat(value, out var parsed) ? parsed : 1.0f;
+            nodeA = Math.Clamp(nodeA, 0f, 100.0f);
 
-            node = Math.Clamp(node, 0f, 100.0f);
-
-            if (_window is not null)
-                node = _window.NodeOneLastEdited ? node : 100.0f - node;
-
-            SendMessage(new GasMixerChangeNodePercentageMessage(node));
+            SendMessage(new GasMixerChangeNodePercentageMessage(nodeA));
         }
 
         /// <summary>
@@ -76,5 +75,15 @@ namespace Content.Client.Atmos.UI
             _window.SetOutputPressure(cast.OutputPressure);
             _window.SetNodePercentages(cast.NodeOne);
         }
+    }
+
+    public struct GasMixerState
+    {
+        public bool Enabled;
+        public float OutputPressure;
+        /// <summary>
+        /// No need for 2, just subtract.
+        /// </summary>
+        public float MixerOneNodePercentage;
     }
 }

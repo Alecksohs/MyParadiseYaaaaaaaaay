@@ -47,31 +47,19 @@
         <!-- Gas/Device Data -->
         <TabContainer Name="CTabContainer" VerticalExpand="True" Margin="0 0 0 2">
             <!-- Vent devices -->
-            <PanelContainer VerticalExpand="True">
-                <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BackgroundColor="#1B1B1E" />
-                </PanelContainer.PanelOverride>
-
+            <PanelContainer VerticalExpand="True" StyleClasses="SurfaceSecondary">
                 <ScrollContainer>
                     <BoxContainer Name="CVentContainer" Orientation="Vertical"/>
                 </ScrollContainer>
             </PanelContainer>
             <!-- Scrubber devices -->
-            <PanelContainer VerticalExpand="True">
-                <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BackgroundColor="#1B1B1E" />
-                </PanelContainer.PanelOverride>
-
+            <PanelContainer VerticalExpand="True" StyleClasses="SurfaceSecondary">
                 <ScrollContainer>
                     <BoxContainer Name="CScrubberContainer" Orientation="Vertical"/>
                 </ScrollContainer>
             </PanelContainer>
             <!-- Sensors -->
-            <PanelContainer VerticalExpand="True">
-                <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BackgroundColor="#1B1B1E" />
-                </PanelContainer.PanelOverride>
-
+            <PanelContainer VerticalExpand="True" StyleClasses="SurfaceSecondary">
                 <ScrollContainer>
                     <BoxContainer Name="CSensorContainer" Orientation="Vertical"/>
                 </ScrollContainer>

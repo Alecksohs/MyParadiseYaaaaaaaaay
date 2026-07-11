@@ -122,6 +122,12 @@
   path: "/Textures/Shaders/uiSDF.swsl"
 
 - type: shader
+  id: UIShaderRadialKnobProgress
+  kind: source
+  path: "/Textures/Shaders/uiSDFRadialKnobProgressBar.swsl"
+
+
+- type: shader
   id: UIShaderSDFTexture
   kind: source
   path: "/Textures/Shaders/uiSDFTexture.swsl"

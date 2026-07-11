@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:s="clr-namespace:Content.Client.Stylesheets"
              xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+             xmlns:xe="clr-namespace:Content.Client.UserInterface.XamlExtensions"
              MinSize="480 400" Title="Canister">
     <BoxContainer Orientation="Vertical" Margin="5 5 5 5" SeparationOverride="10">
         <BoxContainer Orientation="Vertical" VerticalExpand="True">
@@ -31,6 +32,7 @@
 
         <BoxContainer Orientation="Vertical" VerticalExpand="True">
             <Label Text="{Loc comp-gas-canister-ui-release-valve-status}" StyleClasses="LabelHeading"/>
+            <controls:TguiKnob SetSize="64 64" RingTextureOverride="{xe:Tex '/Textures/Interface/radial-progress-ring.png'}" />
             <BoxContainer Orientation="Horizontal">
                 <BoxContainer Orientation="Vertical">
                     <Label Text="{Loc comp-gas-canister-ui-release-pressure}"/>

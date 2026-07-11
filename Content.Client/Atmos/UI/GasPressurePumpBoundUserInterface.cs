@@ -55,3 +55,4 @@ public sealed class GasPressurePumpBoundUserInterface(EntityUid owner, Enum uiKe
         SendPredictedMessage(new GasPressurePumpChangeOutputPressureMessage(value));
     }
 }
+

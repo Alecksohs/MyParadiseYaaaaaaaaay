@@ -1,4 +1,4 @@
-comp-gas-mixer-ui-mixer-status = Status:
+comp-gas-mixer-ui-mixer-status = Power:
 comp-gas-mixer-ui-status-enabled = On
 comp-gas-mixer-ui-status-disabled = Off
 
