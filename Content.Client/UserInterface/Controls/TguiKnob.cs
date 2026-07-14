@@ -56,6 +56,9 @@ namespace Content.Client.UserInterface.Controls
 
         public event Action<TguiKnob>? OnGrabbed;
         public event Action<TguiKnob>? OnReleased;
+        public event Action<TguiKnob>? OnValueEdit;
+
+        public bool IsGrabbed => _grabbed;
 
         private bool _grabbed;
 
@@ -72,6 +75,7 @@ namespace Content.Client.UserInterface.Controls
             _grabbedMousePos = args.RelativePixelPosition;
             HandlePositionChange(args.RelativePosition);
             OnGrabbed?.Invoke(this);
+
         }
 
         protected override void KeyBindUp(GUIBoundKeyEventArgs args)
@@ -99,8 +103,8 @@ namespace Content.Client.UserInterface.Controls
         {
             var dist = mousePos.Y - _grabbedMousePos.Y;
             Value = float.Clamp(_oldVal + dist, MinValue, MaxValue);
+            OnValueEdit?.Invoke(this);
         }
-
 
         public TguiKnob()
         {
@@ -110,6 +114,8 @@ namespace Content.Client.UserInterface.Controls
 
             Shader = _RadialProgressKnobShaderName;
         }
+
+
 
         protected override void Draw(DrawingHandleScreen handle)
         {

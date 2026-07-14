@@ -1,4 +1,5 @@
 using Content.Client.Resources;
+using Content.Client.Stylesheets.Colorspace;
 using Content.Client.Stylesheets.Fonts;
 using Content.Client.Stylesheets.Palette;
 using Robust.Client.UserInterface;
@@ -31,15 +32,18 @@ public sealed class LabelSheetlet : Sheetlet<PalettedStylesheet>
             E<Label>()
                 .Class(StyleClass.LabelSubText)
                 .Font(sheet.BaseFont.GetFont(10))
-                .FontColor(Color.DarkGray),
+                .FontColor(sheet.PanelPalette.Text),
+            E<Label>()
+                .Class(StyleClass.LabelSmallText)
+                .Font(sheet.BaseFont.GetFont(10))
+                .FontColor(sheet.HighlightPalette.Text),
             E<Label>()
                 .Class(StyleClass.LabelKeyText)
                 .Font(sheet.BaseFont.GetFont(11, FontKind.Bold))
                 .FontColor(sheet.HighlightPalette.Text),
             E<Label>()
                 .Class(StyleClass.LabelWeak)
-                .FontColor(Color.DarkGray), // TODO: you know the drill by now
-
+                .FontColor(sheet.PanelPalette.Text.NudgeLightness(-0.1f)),
             E<Label>()
                 .Class(StyleClass.Positive)
                 .FontColor(sheet.PositivePalette.Text),
@@ -49,6 +53,7 @@ public sealed class LabelSheetlet : Sheetlet<PalettedStylesheet>
             E<Label>()
                 .Class(StyleClass.Highlight)
                 .FontColor(sheet.HighlightPalette.Text),
+
 
             E<Button>().ParentOf(E<Label>()).Margin(new Thickness(8f, 2f)),
             E<OptionButton>().ParentOf(E<BoxContainer>()).ParentOf(E<Label>()).Margin(new Thickness(16f, 2f)),
