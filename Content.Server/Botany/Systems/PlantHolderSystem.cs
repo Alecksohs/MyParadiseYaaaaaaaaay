@@ -90,7 +90,7 @@ public sealed class PlantHolderSystem : EntitySystem
         if (component.Seed == null)
             return 0;
 
-        var result = Math.Max(1, (int)(component.Age * component.Seed.GrowthStages / component.Seed.Maturation));
+        var result = Math.Max(1, (int)(component.Age * component.Seed.PlantStats.GrowthStages / component.Seed.PlantStats.Maturation));
         return result;
     }
 
@@ -114,29 +114,29 @@ public sealed class PlantHolderSystem : EntitySystem
                     ("seedName", displayName),
                     ("toBeForm", displayName.EndsWith('s') ? "are" : "is")));
 
-                if (component.Health <= component.Seed.Endurance / 2)
+                if (component.Health <= component.Seed.PlantStats.Endurance / 2)
                 {
                     args.PushMarkup(Loc.GetString(
                         "plant-holder-component-something-already-growing-low-health-message",
                         ("healthState",
-                            Loc.GetString(component.Age > component.Seed.Lifespan
+                            Loc.GetString(component.Age > component.Seed.PlantStats.Lifespan
                                 ? "plant-holder-component-plant-old-adjective"
                                 : "plant-holder-component-plant-unhealthy-adjective"))));
                 }
 
                 // For future reference, mutations should only appear on examine if they apply to a plant, not to produce.
 
-                if (component.Seed.Ligneous)
-                    args.PushMarkup(Loc.GetString("mutation-plant-ligneous"));
-
-                if (component.Seed.TurnIntoKudzu)
-                    args.PushMarkup(Loc.GetString("mutation-plant-kudzu"));
-
-                if (component.Seed.CanScream)
-                    args.PushMarkup(Loc.GetString("mutation-plant-scream"));
-
-                if (component.Seed.Viable == false)
-                    args.PushMarkup(Loc.GetString("mutation-plant-unviable"));
+                // if (component.Seed.Ligneous)
+                //     args.PushMarkup(Loc.GetString("mutation-plant-ligneous"));
+                //
+                // if (component.Seed.TurnIntoKudzu)
+                //     args.PushMarkup(Loc.GetString("mutation-plant-kudzu"));
+                //
+                // if (component.Seed.CanScream)
+                //     args.PushMarkup(Loc.GetString("mutation-plant-scream"));
+                //
+                // if (component.Seed.Viable == false)
+                //     args.PushMarkup(Loc.GetString("mutation-plant-unviable"));
             }
             else
             {
@@ -201,7 +201,7 @@ public sealed class PlantHolderSystem : EntitySystem
                 }
                 else
                 {
-                    component.Health = component.Seed.Endurance;
+                    component.Health = component.Seed.PlantStats.Endurance;
                 }
                 component.LastCycle = _gameTiming.CurTime;
 
@@ -629,7 +629,7 @@ public sealed class PlantHolderSystem : EntitySystem
                 component.UpdateSpriteAfterUpdate = true;
         }
 
-        if (component.Age > component.Seed.Lifespan)
+        if (component.Age > component.Seed.PlantStats.Lifespan)
         {
             component.Health -= _random.Next(3, 5) * HydroponicsSpeedMultiplier;
             if (component.DrawWarnings)
@@ -685,7 +685,7 @@ public sealed class PlantHolderSystem : EntitySystem
             return;
 
         if (component.Seed != null)
-            component.Health = MathHelper.Clamp(component.Health, 0, component.Seed.Endurance);
+            component.Health = MathHelper.Clamp(component.Health, 0, component.Seed.PlantStats.Endurance);
         else
         {
             component.Health = 0f;
@@ -841,14 +841,14 @@ public sealed class PlantHolderSystem : EntitySystem
 
         if (amount > 0)
         {
-            if (component.Age < component.Seed.Maturation)
+            if (component.Age < component.Seed.PlantStats.Maturation)
                 component.Age += amount;
             else if (!component.Harvest && component.Seed.Yield <= 0f)
                 component.LastProduce -= amount;
         }
         else
         {
-            if (component.Age < component.Seed.Maturation)
+            if (component.Age < component.Seed.PlantStats.Maturation)
                 component.SkipAging++;
             else if (!component.Harvest && component.Seed.Yield <= 0f)
                 component.LastProduce += amount;
@@ -930,7 +930,7 @@ public sealed class PlantHolderSystem : EntitySystem
         {
             if (component.DrawWarnings)
             {
-                _appearance.SetData(uid, PlantHolderVisuals.HealthLight, component.Health <= component.Seed.Endurance / 2f);
+                _appearance.SetData(uid, PlantHolderVisuals.HealthLight, component.Health <= component.Seed.PlantStats.Endurance / 2f);
             }
 
             if (component.Dead)
@@ -943,7 +943,7 @@ public sealed class PlantHolderSystem : EntitySystem
                 _appearance.SetData(uid, PlantHolderVisuals.PlantRsi, component.Seed.PlantRsi.ToString(), app);
                 _appearance.SetData(uid, PlantHolderVisuals.PlantState, "harvest", app);
             }
-            else if (component.Age < component.Seed.Maturation)
+            else if (component.Age < component.Seed.PlantStats.Maturation)
             {
                 var growthStage = GetCurrentGrowthStage((uid, component));
 
@@ -954,7 +954,7 @@ public sealed class PlantHolderSystem : EntitySystem
             else
             {
                 _appearance.SetData(uid, PlantHolderVisuals.PlantRsi, component.Seed.PlantRsi.ToString(), app);
-                _appearance.SetData(uid, PlantHolderVisuals.PlantState, $"stage-{component.Seed.GrowthStages}", app);
+                _appearance.SetData(uid, PlantHolderVisuals.PlantState, $"stage-{component.Seed.PlantStats.GrowthStages}", app);
             }
         }
         else
