@@ -2,6 +2,7 @@ using System.Linq;
 using Content.Server.Botany.Components;
 using Content.Server.Materials.Components;
 using Content.Server.Power.EntitySystems;
+using Content.Shared.Botany.Components;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Interaction;
 using Content.Shared.Popups;

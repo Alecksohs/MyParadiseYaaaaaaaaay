@@ -1,8 +1,8 @@
 using Content.Shared.Chemistry.Components;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
 using Robust.Shared.Audio;
+using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
 
-namespace Content.Server.Botany.Components;
+namespace Content.Shared.Botany.Components;
 
 [RegisterComponent]
 public sealed partial class PlantHolderComponent : Component

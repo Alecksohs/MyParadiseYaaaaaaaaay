@@ -294,7 +294,7 @@ public sealed class OracleSystem : EntitySystem
             }
         }
 
-        var allPlants = _prototypeManager.EnumeratePrototypes<SeedPrototype>().Select(x => x.ProductPrototypes[0])
+        var allPlants = _prototypeManager.EnumeratePrototypes<OLDSeedPrototype>().Select(x => x.ProductPrototypes[0])
             .ToList();
         var allProtos = allRecipes.Concat(allPlants).ToList();
         var blacklist = component.BlacklistedPrototypes.ToList();

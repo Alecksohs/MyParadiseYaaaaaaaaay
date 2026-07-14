@@ -26,7 +26,7 @@ public sealed class MutationSystem : EntitySystem
     /// </summary>
     /// <param name="seed"></param>
     /// <param name="severity"></param>
-    public void CheckRandomMutations(EntityUid plantHolder, ref SeedData seed, float severity)
+    public void CheckRandomMutations(EntityUid plantHolder, ref OLDSEEDDATACLASS_OBSOLETE seed, float severity)
     {
         foreach (var mutation in _randomMutations.mutations)
         {
@@ -45,7 +45,7 @@ public sealed class MutationSystem : EntitySystem
     /// <summary>
     /// Checks all defined mutations against a seed to see which of them are applied.
     /// </summary>
-    public void MutateSeed(EntityUid plantHolder, ref SeedData seed, float severity)
+    public void MutateSeed(EntityUid plantHolder, ref OLDSEEDDATACLASS_OBSOLETE seed, float severity)
     {
         if (!seed.Unique)
         {
@@ -56,9 +56,9 @@ public sealed class MutationSystem : EntitySystem
         CheckRandomMutations(plantHolder, ref seed, severity);
     }
 
-    public SeedData Cross(SeedData a, SeedData b)
+    public OLDSEEDDATACLASS_OBSOLETE Cross(OLDSEEDDATACLASS_OBSOLETE a, OLDSEEDDATACLASS_OBSOLETE b)
     {
-        SeedData result = b.Clone();
+        OLDSEEDDATACLASS_OBSOLETE result = b.Clone();
 
         CrossChemicals(ref result.Chemicals, a.Chemicals);
 

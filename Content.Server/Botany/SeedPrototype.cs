@@ -10,7 +10,7 @@ using Robust.Shared.Utility;
 namespace Content.Server.Botany;
 
 [Prototype]
-public sealed partial class SeedPrototype : SeedData, IPrototype
+public sealed partial class OLDSeedPrototype : OLDSEEDDATACLASS_OBSOLETE, IPrototype
 {
     [IdDataField] public string ID { get; private set; } = default!;
 }
@@ -84,7 +84,7 @@ public partial struct SeedChemQuantity
 /// </remarks>
 // TODO: Hit Botany with hammers
 [Virtual, DataDefinition]
-public partial class SeedData
+public partial class OLDSEEDDATACLASS_OBSOLETE
 {
     #region Tracking
 
@@ -243,7 +243,7 @@ public partial class SeedData
     ///     The seed prototypes this seed may mutate into when prompted to.
     /// </summary>
     [DataField]
-    public List<ProtoId<SeedPrototype>> MutationPrototypes = new();
+    public List<ProtoId<OLDSeedPrototype>> MutationPrototypes = new();
 
     /// <summary>
     ///  Log impact for when the seed is planted.
@@ -257,11 +257,11 @@ public partial class SeedData
     [DataField]
     public LogImpact? HarvestLogImpact = null;
 
-    public SeedData Clone()
+    public OLDSEEDDATACLASS_OBSOLETE Clone()
     {
         DebugTools.Assert(!Immutable, "There should be no need to clone an immutable seed.");
 
-        var newSeed = new SeedData
+        var newSeed = new OLDSEEDDATACLASS_OBSOLETE
         {
             Name = Name,
             Noun = Noun,
@@ -270,7 +270,7 @@ public partial class SeedData
 
             PacketPrototype = PacketPrototype,
             ProductPrototypes = new List<EntProtoId>(ProductPrototypes),
-            MutationPrototypes = new List<ProtoId<SeedPrototype>>(MutationPrototypes),
+            MutationPrototypes = new List<ProtoId<OLDSeedPrototype>>(MutationPrototypes),
             Chemicals = new Dictionary<string, SeedChemQuantity>(Chemicals),
             ConsumeGasses = new Dictionary<Gas, float>(ConsumeGasses),
             ExudeGasses = new Dictionary<Gas, float>(ExudeGasses),
@@ -319,9 +319,9 @@ public partial class SeedData
     /// <summary>
     /// Handles copying most species defining data from 'other' to this seed while keeping the accumulated mutations intact.
     /// </summary>
-    public SeedData SpeciesChange(SeedData other)
+    public OLDSEEDDATACLASS_OBSOLETE SpeciesChange(OLDSEEDDATACLASS_OBSOLETE other)
     {
-        var newSeed = new SeedData
+        var newSeed = new OLDSEEDDATACLASS_OBSOLETE
         {
             Name = other.Name,
             Noun = other.Noun,
@@ -330,7 +330,7 @@ public partial class SeedData
 
             PacketPrototype = other.PacketPrototype,
             ProductPrototypes = new List<EntProtoId>(other.ProductPrototypes),
-            MutationPrototypes = new List<ProtoId<SeedPrototype>>(other.MutationPrototypes),
+            MutationPrototypes = new List<ProtoId<OLDSeedPrototype>>(other.MutationPrototypes),
 
             Chemicals = new Dictionary<string, SeedChemQuantity>(Chemicals),
             ConsumeGasses = new Dictionary<Gas, float>(ConsumeGasses),

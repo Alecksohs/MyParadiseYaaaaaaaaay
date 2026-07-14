@@ -1,6 +1,7 @@
 using Content.Server.Botany.Components;
 using Content.Server.Popups;
 using Content.Server.Power.EntitySystems;
+using Content.Shared.Botany.Components;
 using Content.Shared.Interaction;
 using Content.Shared.Popups;
 using Robust.Shared.Random;
@@ -17,17 +18,17 @@ public sealed class SeedExtractorSystem : EntitySystem
     {
         base.Initialize();
 
-        SubscribeLocalEvent<SeedExtractorComponent, InteractUsingEvent>(OnInteractUsing);
+        SubscribeLocalEvent<Components.SeedExtractorComponent, InteractUsingEvent>(OnInteractUsing);
     }
 
-    private void OnInteractUsing(EntityUid uid, SeedExtractorComponent seedExtractor, InteractUsingEvent args)
+    private void OnInteractUsing(EntityUid uid, Components.SeedExtractorComponent seedExtractor, InteractUsingEvent args)
     {
         if (!this.IsPowered(uid, EntityManager))
             return;
 
         if (!TryComp(args.Used, out ProduceComponent? produce))
             return;
-        if (!_botanySystem.TryGetSeed(produce, out var seed) || seed.Seedless)
+        if (!_botanySystem.TryGetSeedData(produce, out var seed) || seed.Value.Seedless)
         {
             _popupSystem.PopupCursor(Loc.GetString("seed-extractor-component-no-seeds", ("name", args.Used)),
                 args.User, PopupType.MediumCaution);

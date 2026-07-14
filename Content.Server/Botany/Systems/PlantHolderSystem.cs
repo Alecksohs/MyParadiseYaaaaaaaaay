@@ -6,6 +6,7 @@ using Content.Shared.Administration.Logs;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Atmos;
 using Content.Shared.Botany;
+using Content.Shared.Botany.Components;
 using Content.Shared.Burial.Components;
 using Content.Shared.Chemistry.Reagent;
 using Content.Shared.Coordinates.Helpers;
@@ -742,7 +743,7 @@ public sealed class PlantHolderSystem : EntitySystem
     /// Force do scream on PlantHolder (like plant is screaming) using seed's ScreamSound specifier (collection or soundPath)
     /// </summary>
     /// <returns></returns>
-    public bool DoScream(EntityUid plantholder, SeedData? seed = null)
+    public bool DoScream(EntityUid plantholder, OLDSEEDDATACLASS_OBSOLETE? seed = null)
     {
         if (seed == null || seed.CanScream == false)
             return false;

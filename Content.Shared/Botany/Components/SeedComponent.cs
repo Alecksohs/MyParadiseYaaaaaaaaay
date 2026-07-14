@@ -1,11 +1,9 @@
-using Content.Server.Botany.Systems;
-using Content.Shared.Botany.Components;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 
-namespace Content.Server.Botany.Components
+namespace Content.Shared.Botany.Components
 {
-    [RegisterComponent, Access(typeof(BotanySystem))]
-    public sealed partial class SeedComponent : SharedSeedComponent
+    [RegisterComponent, Access(typeof(SharedBotanySystem))]
+    public partial class SeedComponent : SharedSeedComponent
     {
         /// <summary>
         ///     Seed data containing information about the plant type & properties that this seed can grow seed. If

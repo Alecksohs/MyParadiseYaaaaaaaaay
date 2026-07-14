@@ -10,7 +10,7 @@
                 <Label Name="CanisterPressureLabel" Align="Center" HorizontalExpand="True"/>
             </BoxContainer>
             <BoxContainer Orientation="Horizontal">
-                <Label Text="{Loc comp-gas-canister-ui-port-status}"/>
+                <Label Text="{Loc comp-]gas-canister-ui-port-status}"/>
                 <Label Name="PortStatusLabel" Align="Center" HorizontalExpand="True"/>
             </BoxContainer>
         </BoxContainer>

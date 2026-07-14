@@ -1,4 +1,5 @@
 using Content.Server.Botany.Components;
+using Content.Shared.Botany.Components;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
 using Content.Shared.Kitchen.Components;
@@ -17,10 +18,10 @@ public sealed class LogSystem : EntitySystem
     {
         base.Initialize();
 
-        SubscribeLocalEvent<LogComponent, InteractUsingEvent>(OnInteractUsing);
+        SubscribeLocalEvent<Components.LogComponent, InteractUsingEvent>(OnInteractUsing);
     }
 
-    private void OnInteractUsing(EntityUid uid, LogComponent component, InteractUsingEvent args)
+    private void OnInteractUsing(EntityUid uid, Components.LogComponent component, InteractUsingEvent args)
     {
         if (!HasComp<SharpComponent>(args.Used))
             return;

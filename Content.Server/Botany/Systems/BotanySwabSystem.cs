@@ -1,5 +1,6 @@
 using Content.Server.Botany.Components;
 using Content.Server.Popups;
+using Content.Shared.Botany.Components;
 using Content.Shared.DoAfter;
 using Content.Shared.Examine;
 using Content.Shared.Interaction;

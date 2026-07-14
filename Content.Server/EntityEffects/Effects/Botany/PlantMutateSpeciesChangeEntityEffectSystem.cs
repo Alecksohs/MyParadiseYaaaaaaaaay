@@ -1,5 +1,6 @@
 using Content.Server.Botany;
 using Content.Server.Botany.Components;
+using Content.Shared.Botany.Components;
 using Content.Shared.EntityEffects;
 using Content.Shared.EntityEffects.Effects.Botany;
 using Robust.Shared.Prototypes;
@@ -18,7 +19,7 @@ public sealed partial class PlantMutateSpeciesChangeEntityEffectSystem : EntityE
             return;
 
         var targetProto = _random.Pick(entity.Comp.Seed.MutationPrototypes);
-        _proto.TryIndex(targetProto, out SeedPrototype? protoSeed);
+        _proto.TryIndex(targetProto, out OLDSeedPrototype? protoSeed);
 
         if (protoSeed == null)
         {

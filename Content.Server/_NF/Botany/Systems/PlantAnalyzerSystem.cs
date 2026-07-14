@@ -9,6 +9,8 @@ using Robust.Shared.Prototypes;
 using System.Linq;
 using System.Text;
 using Content.Shared.Atmos;
+using Content.Shared.Botany;
+using Content.Shared.Botany.Components;
 using Content.Shared.PowerCell;
 
 namespace Content.Server.Botany.Systems;
@@ -105,7 +107,7 @@ public sealed class PlantAnalyzerSystem : EntitySystem
                 var state = ObtainingGeneDataSeed(seedComp.Seed, target, false, ent.Comp.Settings.AdvancedScan);
                 _uiSystem.ServerSendUiMessage(ent.Owner, PlantAnalyzerUiKey.Key, state);
             }
-            else if (seedComp.SeedId != null && _prototypeManager.TryIndex(seedComp.SeedId, out SeedPrototype? protoSeed))
+            else if (seedComp.SeedId != null && _prototypeManager.TryIndex(seedComp.SeedId, out OLDSeedPrototype? protoSeed))
             {
                 var state = ObtainingGeneDataSeed(protoSeed, target, false, ent.Comp.Settings.AdvancedScan);
                 _uiSystem.ServerSendUiMessage(ent.Owner, PlantAnalyzerUiKey.Key, state);
@@ -127,27 +129,28 @@ public sealed class PlantAnalyzerSystem : EntitySystem
     public PlantAnalyzerScannedSeedPlantInformation ObtainingGeneDataSeed(SeedData seedData, EntityUid target, bool isTray, bool scanIsAdvanced)
     {
         // Get trickier fields first.
-        AnalyzerHarvestType harvestType = AnalyzerHarvestType.Unknown;
-        switch (seedData.HarvestRepeat)
-        {
-            case HarvestType.Repeat:
-                harvestType = AnalyzerHarvestType.Repeat;
-                break;
-            case HarvestType.NoRepeat:
-                harvestType = AnalyzerHarvestType.NoRepeat;
-                break;
-            case HarvestType.SelfHarvest:
-                harvestType = AnalyzerHarvestType.SelfHarvest;
-                break;
-            default:
-                break;
-        }
+        // TODO: Perrential Growth
+        // AnalyzerHarvestType harvestType = AnalyzerHarvestType.Unknown;
+        // switch (seedData.HarvestRepeat)
+        // {
+        //     case HarvestType.Repeat:
+        //         harvestType = AnalyzerHarvestType.Repeat;
+        //         break;
+        //     case HarvestType.NoRepeat:
+        //         harvestType = AnalyzerHarvestType.NoRepeat;
+        //         break;
+        //     case HarvestType.SelfHarvest:
+        //         harvestType = AnalyzerHarvestType.SelfHarvest;
+        //         break;
+        //     default:
+        //         break;
+        // }
 
         var mutationProtos = seedData.MutationPrototypes;
         List<string> mutationStrings = new();
         foreach (var mutationProto in mutationProtos)
         {
-            if (_prototypeManager.TryIndex<SeedPrototype>(mutationProto, out var seed))
+            if (_prototypeManager.TryIndex<OLDSeedPrototype>(mutationProto, out var seed))
             {
                 mutationStrings.Add(seed.DisplayName);
             }
@@ -195,7 +198,7 @@ public sealed class PlantAnalyzerSystem : EntitySystem
         return ret;
     }
 
-    public MutationFlags GetMutationFlags(SeedData plant)
+    public MutationFlags GetMutationFlags(OLDSEEDDATACLASS_OBSOLETE plant)
     {
         MutationFlags ret = MutationFlags.None;
         if (plant.TurnIntoKudzu) ret |= MutationFlags.TurnIntoKudzu;

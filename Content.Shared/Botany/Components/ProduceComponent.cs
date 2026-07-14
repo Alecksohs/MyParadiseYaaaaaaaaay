@@ -1,11 +1,9 @@
-using Content.Server.Botany.Systems;
-using Content.Shared.Botany.Components;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 
-namespace Content.Server.Botany.Components;
+namespace Content.Shared.Botany.Components;
 
 [RegisterComponent]
-[Access(typeof(BotanySystem))]
+[Access(typeof(SharedBotanySystem))]
 public sealed partial class ProduceComponent : SharedProduceComponent
 {
     [DataField("targetSolution")] public string SolutionName { get; set; } = "food";
@@ -14,7 +12,7 @@ public sealed partial class ProduceComponent : SharedProduceComponent
     ///     Seed data used to create a <see cref="SeedComponent"/> when this produce has its seeds extracted.
     /// </summary>
     [DataField]
-    public SeedData? Seed;
+    public Seed? Seed;
 
     /// <summary>
     ///     Seed data used to create a <see cref="SeedComponent"/> when this produce has its seeds extracted.

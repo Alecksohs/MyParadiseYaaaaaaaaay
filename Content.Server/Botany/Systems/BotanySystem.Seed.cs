@@ -14,12 +14,13 @@ using Robust.Shared.Random;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Shared.Administration.Logs;
+using Content.Shared.Botany.Components;
 using Content.Shared.Database;
 using Content.Shared.Kitchen.Components;
 
 namespace Content.Server.Botany.Systems;
 
-public sealed partial class BotanySystem : EntitySystem
+public sealed partial class BotanySystem : SharedBotanySystem
 {
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly IRobustRandom _robustRandom = default!;
@@ -31,84 +32,19 @@ public sealed partial class BotanySystem : EntitySystem
     [Dependency] private readonly RandomHelperSystem _randomHelper = default!;
     [Dependency] private readonly ISharedAdminLogManager _adminLogger = default!;
 
-    public override void Initialize()
-    {
-        base.Initialize();
-
-        SubscribeLocalEvent<SeedComponent, ExaminedEvent>(OnExamined);
-        SubscribeLocalEvent<ProduceComponent, ExaminedEvent>(OnProduceExamined);
-    }
-
-    public bool TryGetSeed(SeedComponent comp, [NotNullWhen(true)] out SeedData? seed)
-    {
-        if (comp.Seed != null)
-        {
-            seed = comp.Seed;
-            return true;
-        }
-
-        if (comp.SeedId != null
-            && _prototypeManager.TryIndex(comp.SeedId, out SeedPrototype? protoSeed))
-        {
-            seed = protoSeed;
-            return true;
-        }
-
-        seed = null;
-        return false;
-    }
-
-    public bool TryGetSeed(ProduceComponent comp, [NotNullWhen(true)] out SeedData? seed)
-    {
-        if (comp.Seed != null)
-        {
-            seed = comp.Seed;
-            return true;
-        }
-
-        if (comp.SeedId != null
-            && _prototypeManager.TryIndex(comp.SeedId, out SeedPrototype? protoSeed))
-        {
-            seed = protoSeed;
-            return true;
-        }
-
-        seed = null;
-        return false;
-    }
-
-    private void OnExamined(EntityUid uid, SeedComponent component, ExaminedEvent args)
-    {
-        if (!args.IsInDetailsRange)
-            return;
-
-        if (!TryGetSeed(component, out var seed))
-            return;
-
-        using (args.PushGroup(nameof(SeedComponent), 1))
-        {
-            var name = Loc.GetString(seed.DisplayName);
-            args.PushMarkup(Loc.GetString($"seed-component-description", ("seedName", name)));
-            args.PushMarkup(Loc.GetString($"seed-component-plant-yield-text", ("seedYield", seed.Yield)));
-            args.PushMarkup(Loc.GetString($"seed-component-plant-potency-text", ("seedPotency", seed.Potency)));
-        }
-    }
-
     #region SeedPrototype prototype stuff
 
     /// <summary>
     /// Spawns a new seed packet on the floor at a position, then tries to put it in the user's hands if possible.
     /// </summary>
-    public EntityUid SpawnSeedPacket(SeedData proto, EntityCoordinates coords, EntityUid user, float? healthOverride = null)
+    public EntityUid SpawnSeedPacket(SeedPrototype proto, EntityCoordinates coords, EntityUid user, float? healthOverride = null)
     {
         var seed = Spawn(proto.PacketPrototype, coords);
-        var seedComp = EnsureComp<SeedComponent>(seed);
-        seedComp.Seed = proto;
-        seedComp.HealthOverride = healthOverride;
+        var seedComp = EnsureComp<Seed>(seed);
+        seedComp.SeedData = proto;
 
-        var name = Loc.GetString(proto.Name);
-        var noun = Loc.GetString(proto.Noun);
-        var val = Loc.GetString("botany-seed-packet-name", ("seedName", name), ("seedNoun", noun));
+        var name = Loc.GetString(proto.DisplayName);
+        var val = Loc.GetString("botany-seed-packet-name", ("seedName", name), ("seedNoun", proto.DisplayName));
         _metaData.SetEntityName(seed, val);
 
         // try to automatically place in user's other hand
@@ -116,7 +52,7 @@ public sealed partial class BotanySystem : EntitySystem
         return seed;
     }
 
-    public IEnumerable<EntityUid> AutoHarvest(SeedData proto, EntityCoordinates position, int yieldMod = 1)
+    public IEnumerable<EntityUid> AutoHarvest(OLDSEEDDATACLASS_OBSOLETE proto, EntityCoordinates position, int yieldMod = 1)
     {
         if (position.IsValid(EntityManager) &&
             proto.ProductPrototypes.Count > 0)
@@ -130,7 +66,7 @@ public sealed partial class BotanySystem : EntitySystem
         return Enumerable.Empty<EntityUid>();
     }
 
-    public IEnumerable<EntityUid> Harvest(SeedData proto, EntityUid user, int yieldMod = 1)
+    public IEnumerable<EntityUid> Harvest(OLDSEEDDATACLASS_OBSOLETE proto, EntityUid user, int yieldMod = 1)
     {
         if (proto.ProductPrototypes.Count == 0 || proto.Yield <= 0)
         {
@@ -147,10 +83,10 @@ public sealed partial class BotanySystem : EntitySystem
         return GenerateProduct(proto, Transform(user).Coordinates, yieldMod);
     }
 
-    public IEnumerable<EntityUid> GenerateProduct(SeedData proto, EntityCoordinates position, int yieldMod = 1)
+    public IEnumerable<EntityUid> GenerateProduct(Seed seed, EntityCoordinates position, int yieldMod = 1)
     {
         var totalYield = 0;
-        if (proto.Yield > -1)
+        if (seed.SeedData.PlantStats.Yield > -1)
         {
             if (yieldMod < 0)
                 totalYield = proto.Yield;
@@ -192,7 +128,7 @@ public sealed partial class BotanySystem : EntitySystem
         return products;
     }
 
-    public bool CanHarvest(SeedData proto, EntityUid? held = null)
+    public bool CanHarvest(OLDSEEDDATACLASS_OBSOLETE proto, EntityUid? held = null)
     {
         return !proto.Ligneous || proto.Ligneous && held != null && HasComp<SharpComponent>(held);
     }

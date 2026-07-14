@@ -1,4 +1,5 @@
 using Content.Server.Botany.Components;
+using Content.Shared.Botany.Components;
 using Content.Shared.EntityEffects;
 using Content.Shared.Examine;
 using Content.Shared.FixedPoint;
@@ -38,22 +39,5 @@ public sealed partial class BotanySystem
         }
     }
 
-    public void OnProduceExamined(EntityUid uid, ProduceComponent comp, ExaminedEvent args)
-    {
-        if (comp.Seed == null)
-            return;
 
-        using (args.PushGroup(nameof(ProduceComponent)))
-        {
-            foreach (var m in comp.Seed.Mutations)
-            {
-                // Don't show mutations that have no effect on produce (sentience)
-                if (!m.AppliesToProduce)
-                    continue;
-
-                if (m.Description != null)
-                    args.PushMarkup(Loc.GetString(m.Description));
-            }
-        }
-    }
 }
