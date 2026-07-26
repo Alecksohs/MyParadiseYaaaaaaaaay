@@ -1,4 +1,6 @@
-﻿using Content.Client.Stylesheets.SheetletConfigs;
+﻿using System.Numerics;
+using Content.Client.Stylesheets.Colorspace;
+using Content.Client.Stylesheets.SheetletConfigs;
 using Content.Client.Stylesheets.Stylesheets;
 using Robust.Client.Graphics;
 using Robust.Client.UserInterface;
@@ -34,15 +36,20 @@ public sealed class SliderSheetlet<T> : Sheetlet<T> where T: PalettedStylesheet,
             Modulate = Color.FromHex("#494949") // TODO: Unhardcode.
         };
 
-        var sliderGrabBox = new StyleBoxTexture
+        var sliderGrabBox = new StyleBoxSDFBox()
         {
-            Texture = sheet.GetTextureOr(sliderCfg.SliderGrabber, NanotrasenStylesheet.TextureRoot),
+            CornerRadius = new Vector4(sheet.PanelPalette.PanelCornerRadius),
+            BackgroundColor = sheet.PanelPalette.PanelPrimary.NudgeLightness(0.2f).WithAlpha(0.9f),
+            ContentMarginLeftOverride = 4f,
+            ContentMarginRightOverride = 4f,
+            ContentMarginTopOverride = 12f,
+            ContentMarginBottomOverride = 12f,
         };
 
         sliderFillBox.SetPatchMargin(StyleBox.Margin.All, 12);
         sliderBackBox.SetPatchMargin(StyleBox.Margin.All, 12);
         sliderForeBox.SetPatchMargin(StyleBox.Margin.All, 12);
-        sliderGrabBox.SetPatchMargin(StyleBox.Margin.All, 12);
+
 
         // var sliderFillGreen = new StyleBoxTexture(sliderFillBox) { Modulate = Color.LimeGreen };
         // var sliderFillRed = new StyleBoxTexture(sliderFillBox) { Modulate = Color.Red };
