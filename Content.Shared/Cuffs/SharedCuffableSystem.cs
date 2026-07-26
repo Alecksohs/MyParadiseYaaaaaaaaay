@@ -744,7 +744,9 @@ namespace Content.Shared.Cuffs
             // if combat mode is on, shove the person.
             if (_combatMode.IsInCombatMode(user) && target != user && user != null)
             {
-                var eventArgs = new DisarmedEvent(target, user.Value, 1f);
+                var dir = _transform.GetWorldPosition(target) - _transform.GetWorldPosition(user.Value);
+
+                var eventArgs = new DisarmedEvent(target, user.Value, dir.Normalized());
                 RaiseLocalEvent(target, ref eventArgs);
                 shoved = true;
             }

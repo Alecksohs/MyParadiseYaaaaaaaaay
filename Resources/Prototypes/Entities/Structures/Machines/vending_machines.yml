@@ -12,6 +12,8 @@
     - ActionVendingThrow
   - type: StationAiWhitelist
   - type: AmbientOnPowered
+  - type: Tippable
+    tipDamage: 50
   - type: AmbientSound
     volume: -9
     range: 3

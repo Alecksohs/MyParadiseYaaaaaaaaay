@@ -1,7 +1,9 @@
 using System.Linq;
+using System.Numerics;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Alert;
 using Content.Shared.CCVar;
+using Content.Shared.Climbing.Components;
 using Content.Shared.CombatMode;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Events;
@@ -9,6 +11,8 @@ using Content.Shared.Database;
 using Content.Shared.Effects;
 using Content.Shared.FixedPoint;
 using Content.Shared.Movement.Components;
+using Content.Shared.Movement.Pulling.Components;
+using Content.Shared.Movement.Pulling.Systems;
 using Content.Shared.Movement.Systems;
 using Content.Shared.Projectiles;
 using Content.Shared.Rejuvenate;
@@ -16,6 +20,7 @@ using Content.Shared.Rounding;
 using Content.Shared.StatusEffectNew;
 using Content.Shared.Stunnable;
 using Content.Shared.Throwing;
+using Content.Shared.VendingMachines;
 using Content.Shared.Weapons.Melee; // DeltaV
 using Content.Shared.Weapons.Melee.Events;
 using JetBrains.Annotations;
@@ -23,6 +28,9 @@ using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Configuration;
 using Robust.Shared.Network;
+using Robust.Shared.Physics.Components;
+using Robust.Shared.Physics.Events;
+using Robust.Shared.Physics.Systems;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
@@ -46,6 +54,10 @@ public abstract partial class SharedStaminaSystem : EntitySystem
     [Dependency] private readonly StatusEffectsSystem _status = default!;
     [Dependency] protected readonly SharedStunSystem StunSystem = default!;
     [Dependency] private readonly MovementSpeedModifierSystem _movement = default!; // EE - Harpy Flight
+    [Dependency] private readonly SharedPhysicsSystem _physics = default!; // Paradise - RealShove
+    [Dependency] private readonly PullingSystem _pullingSystem = default!; // Paradise - RealShove
+    [Dependency] private readonly DamageableSystem _damageableSystem = default!; // Paradise - RealShove - Glass Tables
+    [Dependency] private readonly SharedTransformSystem _sharedTransformSystem = default!; // Paradise - RealShove
 
     /// <summary>
     /// How much of a buffer is there between the stun duration and when stuns can be re-applied.
@@ -74,8 +86,33 @@ public abstract partial class SharedStaminaSystem : EntitySystem
 
         SubscribeLocalEvent<StaminaDamageOnHitComponent, MeleeHitEvent>(OnMeleeHit);
 
+        SubscribeLocalEvent<ShovedComponent, StartCollideEvent>(OnShovedIntoObject); // Paradise - RealShove
+
         Subs.CVar(_config, CCVars.PlaytestStaminaDamageModifier, value => UniversalStaminaDamageModifier = value, true);
     }
+
+    // PARADISE START - RealShove
+    private void OnShovedIntoObject(EntityUid uid, ShovedComponent component, ref StartCollideEvent args)
+    {
+        if (!args.OtherBody.Hard || !args.OtherFixture.Hard || !args.OtherBody.CanCollide || args.OtherEntity == component.Shover)
+        {
+            return;
+        }
+        StunSystem.TryKnockdown(uid, component.KnockdownDuration);
+        var ev = new ShovedIntoEvent(uid, component.Shover);
+        RaiseLocalEvent(args.OtherEntity, ref ev);
+
+        if (TryComp<GlassTableComponent>(args.OtherEntity, out var glassTable))
+        {
+            // Glass Tables have no system.
+            _damageableSystem.TryChangeDamage(args.OtherEntity, glassTable.ClimberDamage, origin: args.OtherEntity);
+            _damageableSystem.TryChangeDamage(uid, glassTable.TableDamage, origin: args.OtherEntity);
+            StunSystem.TryUpdateParalyzeDuration(args.OtherEntity, TimeSpan.FromSeconds(glassTable.StunTime));
+        }
+
+        RemCompDeferred<ShovedComponent>(uid);
+    }
+    // PARADISE END - RealShove
 
     protected virtual void OnStamHandleState(Entity<StaminaComponent> entity, ref AfterAutoHandleStateEvent args)
     {
@@ -96,6 +133,7 @@ public abstract partial class SharedStaminaSystem : EntitySystem
         {
             RemCompDeferred<ActiveStaminaComponent>(entity);
         }
+
         _alerts.ClearAlert(entity.Owner, entity.Comp.StaminaAlert);
     }
 
@@ -115,7 +153,9 @@ public abstract partial class SharedStaminaSystem : EntitySystem
 
         var curTime = Timing.CurTime;
         var pauseTime = _metadata.GetPauseTime(uid);
-        return MathF.Max(0f, component.StaminaDamage - MathF.Max(0f, (float) (curTime - (component.NextUpdate + pauseTime)).TotalSeconds * component.Decay));
+        return MathF.Max(0f,
+            component.StaminaDamage - MathF.Max(0f,
+                (float)(curTime - (component.NextUpdate + pauseTime)).TotalSeconds * component.Decay));
     }
 
     private void OnRejuvenate(Entity<StaminaComponent> entity, ref RejuvenateEvent args)
@@ -141,7 +181,27 @@ public abstract partial class SharedStaminaSystem : EntitySystem
         if (component.Critical)
             return;
 
-        var damage = args.PushProbability * component.CritThreshold;
+        // PARADISE START - RealShove
+        if (!TryComp<PhysicsComponent>(uid, out var physicsComponent))
+        {
+            return;
+        }
+
+        // stop pulling.
+        if (TryComp(uid, out PullerComponent? puller) && TryComp(uid, out PullableComponent? pullable))
+            _pullingSystem.TryStopPull(uid, pullable, args.Source);
+
+        EnsureComp<ShovedComponent>(uid, out var shovedComponent);
+        shovedComponent.KnockdownDuration = TimeSpan.FromSeconds(1);
+        shovedComponent.ShoveWindow = Timing.CurTime + TimeSpan.FromSeconds(0.25f);
+        shovedComponent.Shover = args.Source;
+
+
+        _physics.ApplyLinearImpulse(uid, args.PushDirection * 1000f, body: physicsComponent);
+
+
+        var damage = component.CritThreshold / 6; // must shove ~6 times
+        // PARADISE END - RealShove
         TakeStaminaDamage(uid, damage, component, source: args.Source);
 
         args.PopupPrefix = "disarm-action-shove-";
@@ -195,7 +255,12 @@ public abstract partial class SharedStaminaSystem : EntitySystem
 
         foreach (var (ent, comp) in toHit)
         {
-            TakeStaminaDamage(ent, damage / toHit.Count, comp, source: args.User, with: args.Weapon, sound: component.Sound);
+            TakeStaminaDamage(ent,
+                damage / toHit.Count,
+                comp,
+                source: args.User,
+                with: args.Weapon,
+                sound: component.Sound);
         }
     }
 
@@ -239,21 +304,28 @@ public abstract partial class SharedStaminaSystem : EntitySystem
     }
 
     // Here so server can properly tell all clients in PVS range to start the animation
-    protected virtual void SetStaminaAnimation(Entity<StaminaComponent> entity){}
+    protected virtual void SetStaminaAnimation(Entity<StaminaComponent> entity) { }
 
     private void SetStaminaAlert(EntityUid uid, StaminaComponent? component = null)
     {
         if (!Resolve(uid, ref component, false) || component.Deleted)
             return;
 
-        var severity = ContentHelpers.RoundToLevels(MathF.Max(0f, component.CritThreshold - component.StaminaDamage), component.CritThreshold, 7);
-        _alerts.ShowAlert(uid, component.StaminaAlert, (short) severity);
+        var severity = ContentHelpers.RoundToLevels(MathF.Max(0f, component.CritThreshold - component.StaminaDamage),
+            component.CritThreshold,
+            7);
+        _alerts.ShowAlert(uid, component.StaminaAlert, (short)severity);
     }
 
     /// <summary>
     /// Tries to take stamina damage without raising the entity over the crit threshold.
     /// </summary>
-    public bool TryTakeStamina(EntityUid uid, float value, StaminaComponent? component = null, EntityUid? source = null, EntityUid? with = null, bool visual = false)
+    public bool TryTakeStamina(EntityUid uid,
+        float value,
+        StaminaComponent? component = null,
+        EntityUid? source = null,
+        EntityUid? with = null,
+        bool visual = false)
     {
         // Something that has no Stamina component automatically passes stamina checks
         if (!Resolve(uid, ref component, false))
@@ -268,14 +340,21 @@ public abstract partial class SharedStaminaSystem : EntitySystem
         return true;
     }
 
-    public void TakeStaminaDamage(EntityUid uid, float value, StaminaComponent? component = null,
-        EntityUid? source = null, EntityUid? with = null, bool visual = true, SoundSpecifier? sound = null, bool ignoreResist = false,
+    public void TakeStaminaDamage(EntityUid uid,
+        float value,
+        StaminaComponent? component = null,
+        EntityUid? source = null,
+        EntityUid? with = null,
+        bool visual = true,
+        SoundSpecifier? sound = null,
+        bool ignoreResist = false,
         bool? allowsSlowdown = true) // EE - Harpy Flight
     {
         if (!Resolve(uid, ref component, false))
             return;
 
-        var ev = new BeforeStaminaDamageEvent(value, HasComp<MeleeWeaponComponent>(source)); // DeltaV - check if the source is a melee weapon
+        var ev = new BeforeStaminaDamageEvent(value,
+            HasComp<MeleeWeaponComponent>(source)); // DeltaV - check if the source is a melee weapon
         RaiseLocalEvent(uid, ref ev);
         if (ev.Cancelled)
             return;
@@ -314,7 +393,8 @@ public abstract partial class SharedStaminaSystem : EntitySystem
         // Checking if the stamina damage has decreased to zero after exiting the stamcrit
         if (component.AfterCritical && oldDamage > component.StaminaDamage && component.StaminaDamage <= 0f)
         {
-            component.AfterCritical = false; // Since the recovery from the crit has been completed, we are no longer 'after crit'
+            component.AfterCritical =
+                false; // Since the recovery from the crit has been completed, we are no longer 'after crit'
             _status.TryRemoveStatusEffect(uid, StaminaLow);
         }
 
@@ -340,7 +420,8 @@ public abstract partial class SharedStaminaSystem : EntitySystem
             return;
         if (source != null)
         {
-            _adminLogger.Add(LogType.Stamina, $"{ToPrettyString(source.Value):user} caused {value} stamina damage to {ToPrettyString(uid):target}{(with != null ? $" using {ToPrettyString(with.Value):using}" : "")}");
+            _adminLogger.Add(LogType.Stamina,
+                $"{ToPrettyString(source.Value):user} caused {value} stamina damage to {ToPrettyString(uid):target}{(with != null ? $" using {ToPrettyString(with.Value):using}" : "")}");
         }
         else
         {
@@ -349,7 +430,9 @@ public abstract partial class SharedStaminaSystem : EntitySystem
 
         if (visual)
         {
-            _color.RaiseEffect(Color.Aqua, new List<EntityUid>() { uid }, Filter.Pvs(uid, entityManager: EntityManager));
+            _color.RaiseEffect(Color.Aqua,
+                new List<EntityUid>() { uid },
+                Filter.Pvs(uid, entityManager: EntityManager));
         }
 
         if (_net.IsServer)
@@ -380,12 +463,23 @@ public abstract partial class SharedStaminaSystem : EntitySystem
             if (comp.ActiveDrains.Count > 0)
                 foreach (var (source, (drainRate, modifiesSpeed)) in comp.ActiveDrains)
                     TakeStaminaDamage(uid,
-                    drainRate * frameTime,
-                    comp,
-                    source: source,
-                    visual: false,
-                    allowsSlowdown: modifiesSpeed);
+                        drainRate * frameTime,
+                        comp,
+                        source: source,
+                        visual: false,
+                        allowsSlowdown: modifiesSpeed);
             // End EE
+
+            // PARADISE START - RealShove
+
+            if (TryComp<ShovedComponent>(uid, out var shoved))
+            {
+                if (Timing.CurTime > shoved.ShoveWindow)
+                {
+                    RemCompDeferred<ShovedComponent>(uid);
+                }
+            }
+            // PARADISE END - RealShove
 
             // Shouldn't need to consider paused time as we're only iterating non-paused stamina components.
             var nextUpdate = comp.NextUpdate;
@@ -402,7 +496,9 @@ public abstract partial class SharedStaminaSystem : EntitySystem
             if (comp.ActiveDrains.Count == 0) // EE - Harpy Flight
                 TakeStaminaDamage(
                     uid,
-                    comp.AfterCritical ? -comp.Decay * comp.AfterCritDecayMultiplier : -comp.Decay, // Recover faster after crit
+                    comp.AfterCritical
+                        ? -comp.Decay * comp.AfterCritDecayMultiplier
+                        : -comp.Decay, // Recover faster after crit
                     comp);
 
             Dirty(uid, comp);
@@ -443,7 +539,7 @@ public abstract partial class SharedStaminaSystem : EntitySystem
         }
 
         component.Critical = false;
-        component.AfterCritical = true;  // Set to true to indicate that stamina will be restored after exiting stamcrit
+        component.AfterCritical = true; // Set to true to indicate that stamina will be restored after exiting stamcrit
         component.NextUpdate = Timing.CurTime;
 
         UpdateStaminaVisuals((uid, component));
@@ -484,4 +580,11 @@ public abstract partial class SharedStaminaSystem : EntitySystem
     {
         public NetEntity Entity = entity;
     }
+}
+
+[ByRefEvent]
+public record struct ShovedIntoEvent(EntityUid Target, EntityUid Source)
+{
+    public readonly EntityUid Victim = Target;
+    public readonly EntityUid Aggressor = Source;
 }
