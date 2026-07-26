@@ -32,6 +32,7 @@ public sealed partial class SprayPainterWindow : FancyWindow
     public event Action<bool>? OnDecalSnapChanged;
     public event Action<bool>? OnDecalColorPickerToggled;
 
+
     // Pipe color data
     private ItemList _colorList = default!;
     public Dictionary<string, int> ItemColorIndex = new();
@@ -196,7 +197,6 @@ public sealed partial class SprayPainterWindow : FancyWindow
                 _sprayPainterDecals.OnColorChanged += color => OnDecalColorChanged?.Invoke(color);
                 _sprayPainterDecals.OnAngleChanged += angle => OnDecalAngleChanged?.Invoke(angle);
                 _sprayPainterDecals.OnSnapChanged += snap => OnDecalSnapChanged?.Invoke(snap);
-                _sprayPainterDecals.OnColorPickerToggled += toggle => OnDecalColorPickerToggled?.Invoke(toggle);
 
                 Tabs.AddChild(_sprayPainterDecals);
                 TabContainer.SetTabTitle(_sprayPainterDecals, Loc.GetString("spray-painter-tab-category-decals"));
@@ -301,10 +301,6 @@ public sealed partial class SprayPainterWindow : FancyWindow
             _sprayPainterDecals.SetSnap(snap);
     }
 
-    public void SetDecalColorPicker(bool colorPickerEnabled)
-    {
-        _sprayPainterDecals?.SetColorPicker(colorPickerEnabled);
-    }
     #endregion
 }
 

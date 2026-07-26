@@ -1,5 +1,6 @@
 ﻿<BoxContainer xmlns="https://spacestation14.io"
               xmlns:customControls="clr-namespace:Content.Client.Administration.UI.CustomControls"
+              xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
               Margin="10 10 10 0"
               HorizontalExpand="True"
               Visible="True">
@@ -10,17 +11,24 @@
                 <BoxContainer Orientation="Vertical" HorizontalExpand="True">
                     <RichTextLabel Name="RewardLabel"/>
                     <RichTextLabel Name="ManifestLabel"/>
+                    <RichTextLabel Name="ClaimedBylabel"/> <!-- DeltaV bounty claim -->
+                    <RichTextLabel Name="StatusLabel"/> <!-- DeltaV bounty claim     -->
                 </BoxContainer>
                 <Control MinWidth="10"/>
                 <BoxContainer Orientation="Vertical" MinWidth="120">
                     <BoxContainer Orientation="Horizontal" MinWidth="120">
+                        <Button Name="ClaimButton"
+                                Text= "{Loc 'bounty-console-claim-button-text'}"
+                                HorizontalExpand="False"
+                                StyleClasses="OpenRight"/>
+                        <Control Margin="2 2"/>
                         <Button Name="PrintButton"
                                 Text="{Loc 'bounty-console-label-button-text'}"
                                 HorizontalExpand="False"
                                 HorizontalAlignment="Right"
                                 StyleClasses="OpenRight"
                                 MinWidth="125"/>
-                        <Control Margin="4 4"/>
+                        <Control Margin="2 2"/>
                         <Button Name="SkipButton"
                                 Text="{Loc 'bounty-console-skip-button-text'}"
                                 HorizontalExpand="False"
@@ -31,6 +39,12 @@
                     <RichTextLabel Name="IdLabel" HorizontalAlignment="Right" Margin="0 0 5 0"/>
                 </BoxContainer>
             </BoxContainer>
+
+            <controls:TguiOptionButton Name="BountyStatusSelector"
+                          Access="Public"
+                          StyleClasses="OpenBoth"
+                          HorizontalExpand="True" Margin="0 4 0 0"/>
+
             <customControls:HSeparator Margin="5 10 5 10"/>
             <BoxContainer>
                 <RichTextLabel Name="DescriptionLabel"/>

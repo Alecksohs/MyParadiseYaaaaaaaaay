@@ -22,6 +22,7 @@ public sealed partial class SprayPainterDecals : Control
     public Action<Color?>? OnColorChanged;
     public Action<int>? OnAngleChanged;
     public Action<bool>? OnSnapChanged;
+    
 
     public Color SelectedColor = Color.White;
 

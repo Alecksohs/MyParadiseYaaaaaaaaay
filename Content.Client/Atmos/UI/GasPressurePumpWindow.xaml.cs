@@ -15,7 +15,7 @@ namespace Content.Client.Atmos.UI
     {
         public bool PumpStatus = true;
 
-        public event Action? ToggleStatusButtonPressed;
+        public event Action<bool>? ToggleStatusButtonPressed;
         public event Action<float>? PumpOutputPressureChanged;
 
         public float MaxPressure
@@ -36,7 +36,7 @@ namespace Content.Client.Atmos.UI
             RobustXamlLoader.Load(this);
 
             ToggleStatusButton.OnPressed += _ => SetPumpStatus(!PumpStatus);
-            ToggleStatusButton.OnPressed += _ => ToggleStatusButtonPressed?.Invoke();
+            ToggleStatusButton.OnPressed += _ => ToggleStatusButtonPressed?.Invoke(PumpStatus);
 
             PumpPressureOutputInput.OnTextEntered += _ =>
             {

@@ -1,7 +1,8 @@
 <Control
     xmlns="https://spacestation14.io"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls">
+    xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+    xmlns:profileEditorControls="clr-namespace:Content.Client.Lobby.UI.ProfileEditorControls">
     <BoxContainer Name="VBox" Orientation="Vertical">
         <controls:NanoHeading Name="Header" Text="{Loc 'lobby-character-preview-panel-header'}">
 
@@ -25,6 +26,13 @@
                 </BoxContainer>
 
                 <BoxContainer Name="ViewBox" Orientation="Horizontal" HorizontalAlignment="Center">
+
+                    <profileEditorControls:ProfilePreviewSpriteView Name="ProfilePreviewSpriteView"
+                                                      OverrideDirection="South"
+                                                      Scale="4 4"
+                                                      MaxSize="112 112"
+                                                      Stretch="Fill"
+                                                      Access="Public" />
 
                 </BoxContainer>
                 <controls:VSpacer/>

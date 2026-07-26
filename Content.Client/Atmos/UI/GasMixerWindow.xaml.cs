@@ -23,7 +23,7 @@ namespace Content.Client.Atmos.UI
     [GenerateTypedNameReferences]
     public sealed partial class GasMixerWindow : FancyWindow
     {
-        public event Action? ToggleStatusButtonPressed;
+        public event Action<bool>? ToggleStatusButtonPressed;
         public event Action<GasMixerState>? MixerNodeDataSet;
 
         public bool NodeOneLastEdited = true;
@@ -35,7 +35,7 @@ namespace Content.Client.Atmos.UI
             RobustXamlLoader.Load(this);
 
             ToggleStatusButton.OnPressed += _ => SetMixerStatus(!MixerState.Enabled);
-            ToggleStatusButton.OnPressed += _ => ToggleStatusButtonPressed?.Invoke();
+            ToggleStatusButton.OnPressed += _ => ToggleStatusButtonPressed?.Invoke(MixerState.Enabled);
 
             SetMaxPressureButton.OnPressed += _ =>
             {
