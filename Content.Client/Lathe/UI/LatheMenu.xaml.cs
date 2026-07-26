@@ -4,6 +4,7 @@ using Content.Client.Materials;
 using Content.Client.UserInterface.Controls;
 using Content.Shared._DV.Salvage.Components; // DeltaV
 using Content.Shared._DV.Salvage.Systems; // DeltaV
+using Content.Client.UserInterface.Controls;
 using Content.Shared.Lathe;
 using Content.Shared.Lathe.Prototypes;
 using Content.Shared.Research.Prototypes;
@@ -12,7 +13,6 @@ using Robust.Client.GameObjects;
 using Robust.Client.Player; // DeltaV
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
-using Robust.Client.UserInterface.CustomControls;
 using Robust.Client.UserInterface.XAML;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing; // DeltaV
@@ -86,6 +86,7 @@ public sealed partial class LatheMenu : FancyWindow
     public void SetEntity(EntityUid uid)
     {
         Entity = uid;
+        this.SetInfoFromEntity(_entityManager, Entity);
 
         if (_entityManager.TryGetComponent<LatheComponent>(Entity, out var latheComponent))
         {
